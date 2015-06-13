@@ -1,3 +1,20 @@
+.signin {
+  padding: 30px;
+  border: 1px #000 solid;
+  width: 500px;
+  margin: 0 auto;
+  background-color: #eeeeee;
+}
+
+.signin h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.signin .form-horizontal input{
+  width:100%;
+}
+
 .pharmacy {
   box-sizing: border-box;
   /*height: 500px;*/
@@ -44,10 +61,6 @@
   border: 1px #000 solid;
 }
 
-/*.pharmacy .details {
-  width: 250px;
-}*/
-
 .pharmacy .details td {
   padding:5px;
   vertical-align: top;
@@ -70,4 +83,12 @@
 
 .no-reports {
     display: none;
+}
+
+.modal-content .form-horizontal {
+  padding:30px;
+}
+
+.modal-content .form-horizontal input{
+  width:100%;
 }
