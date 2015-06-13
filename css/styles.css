@@ -1,0 +1,73 @@
+.pharmacy {
+  box-sizing: border-box;
+  /*height: 500px;*/
+  padding: 30px;
+  border: 1px #000 solid;
+}
+.pharmacy h1 {
+  font-size: 60px;
+  line-height: 1;
+  color: inherit;
+  letter-spacing: -1px;
+}
+.pharmacy p {
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 27px;
+  color: inherit;
+}
+.pharmacy.col-md-9 {
+  background-color:#337ab7;
+}
+.pharmacy.col-md-3 {
+  background-color:#eeeeee;
+  height: 500px;
+}
+.pharmacy.col-md-3 h2{
+  margin:0;
+}
+#searchTextField {
+  height: 40px;
+  width: 100%;
+  font-size: 24px;
+  line-height: normal;
+  line-height: 32px\0/; /* for IE 8 */
+  border: 1px #000 solid;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#map-canvas {
+  height: 440px;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 5px;
+  border: 1px #000 solid;
+}
+
+/*.pharmacy .details {
+  width: 250px;
+}*/
+
+.pharmacy .details td {
+  padding:5px;
+  vertical-align: top;
+}
+
+#logout {
+	display: none;
+}
+
+.dropdown-menu {
+    max-height: 400px;
+    overflow-y: scroll;
+    width: 100%;
+}
+
+.list-item {
+    padding-top: 6px;
+    padding-left: 56px;
+}
+
+.no-reports {
+    display: none;
+}
