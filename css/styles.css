@@ -17,7 +17,6 @@
 
 .pharmacy {
   box-sizing: border-box;
-  /*height: 500px;*/
   padding: 30px;
   border: 1px #000 solid;
 }
@@ -43,15 +42,6 @@
 .pharmacy.col-md-3 h2{
   margin:0;
 }
-#searchTextField {
-  height: 40px;
-  width: 100%;
-  font-size: 24px;
-  line-height: normal;
-  line-height: 32px\0/; /* for IE 8 */
-  border: 1px #000 solid;
-  font-family: Arial, Helvetica, sans-serif;
-}
 
 #map-canvas {
   height: 440px;
@@ -70,7 +60,16 @@
 	display: none;
 }
 
-.dropdown-menu {
+.modal-content {
+  padding:30px;
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/*.dropdown-menu {
     max-height: 400px;
     overflow-y: scroll;
     width: 100%;
@@ -84,11 +83,4 @@
 .no-reports {
     display: none;
 }
-
-.modal-content .form-horizontal {
-  padding:30px;
-}
-
-.modal-content .form-horizontal input{
-  width:100%;
-}
+*/
