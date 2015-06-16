@@ -69,18 +69,10 @@
   margin-bottom: 30px;
 }
 
-/*.dropdown-menu {
-    max-height: 400px;
-    overflow-y: scroll;
-    width: 100%;
+.profile {
+  box-sizing: border-box;
+  padding: 30px;
+  border: 1px #000 solid; 
+  border-radius: 4px;
+  text-align: center;
 }
-
-.list-item {
-    padding-top: 6px;
-    padding-left: 56px;
-}
-
-.no-reports {
-    display: none;
-}
-*/

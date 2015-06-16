@@ -1,8 +1,15 @@
 <div>
     <h1>Prescriptions</h1>
-    <p>Create profiles for each individual's prescriptions.</p>
+    <p>Create and navigate stored profiles.</p>
+    
     <p>&nbsp;</p>
+
     <button type="button" class="btn btn-success" data-toggle="modal" data-target=".bs-example-modal-sm">+</button>
+
+    <p>&nbsp;</p>
+
+    <div class="profiles"></div>
+
     <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">     
@@ -29,7 +36,7 @@
               
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                  <button class="form-control btn btn-success" type="submit">Create Profile</button>
+                  <button class="form-control btn btn-success" type="submit" id="insertProfile">Create Profile</button>
                 </div>
               </div>
 
