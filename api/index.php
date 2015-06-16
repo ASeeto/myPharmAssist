@@ -9,7 +9,9 @@ $app = new Slim();
 $app->post('/login', 'login');
 $app->post('/logout', 'logout');
 $app->post('/register', 'register');
+$app->post('/insertProfile', authorize('user'), 'insertProfile');
 $app->get('/session', authorize('user'));
+$app->get('/profiles', authorize('user'), 'getProfiles');
 $app->get('/employees', authorize('user'),'getEmployees');
 $app->get('/employees/:id', authorize('user'),  'getEmployee');
 $app->get('/employees/:id/reports', authorize('user'),  'getReports');
@@ -164,16 +166,105 @@ function authorize($role = "user") {
             }
             else {
                 // If a user is logged in, but doesn't have permissions, return 403
-                $app->halt(403, 'Access denied. Please request the correct permissions to continue.');
-                return '403';
+                $app->halt(403, 'You shall not pass!');
             }
         }
         else {
             // If a user is not logged in at all, return a 401
-            $app->halt(401, 'Access denied. Please login to continue.');
-            return '401';
+            $app->halt(401, 'You shall not pass!');
         }
     };
+}
+
+function getSessionId() {
+    /** Get current session email  */
+    $email = $_SESSION['user']['email'];
+    try {
+        /** Connect to database  */
+        $db = getConnection();
+
+        /** Use email to find current session ID */
+        $sql = "SELECT * FROM users WHERE email = :email";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("email", $email);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['id'];
+
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function getProfiles() {
+    /** Get current session email  */
+    $email = $_SESSION['user']['email'];
+    try {
+        /** Connect to database  */
+        $db = getConnection();
+        $user_id = getSessionId();
+        
+        /** Use session ID to get profiles */
+        $sql = "SELECT p.name, p.color FROM profiles p LEFT JOIN userprofiles up ON p.id = up.profile_id WHERE up.user_id = :user_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("user_id", $user_id);
+        $stmt->execute();
+        $profiles = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        // Include support for JSONP requests
+        if (!isset($_GET['callback'])) {
+            echo json_encode($profiles);
+        } else {
+            echo $_GET['callback'] . '(' . json_encode($profiles) . ');';
+        }
+
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function insertProfile() {
+    if(!empty($_POST['name']) && !empty($_POST['color'])) {
+    
+        /** Initialize variables for values taken from request */
+        $user_id = getSessionId();
+        $name = $_POST['name'];
+        $color = $_POST['color'];
+
+        try {
+
+            /** Connect to the database */
+            $db = getConnection();
+
+            /** Create the new profile */
+            $db = getConnection();
+            $sql = "INSERT INTO profiles(name,color) VALUES(:name, :color);";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("name", $name);
+            $stmt->bindParam("color", $color);
+            $stmt->execute();
+
+            /** Get last insert ID, the profile just created from THIS connection */
+            $profile_id = $db->lastInsertId('profiles');
+            
+            /** Add the new profile for the current user in the userprofiles table */
+            $sql = "INSERT INTO userprofiles(user_id,profile_id) VALUES(:user_id, :profile_id);";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("user_id", $user_id);
+            $stmt->bindParam("profile_id", $profile_id);
+            $stmt->execute();
+
+            $db = null;
+
+            return true;
+
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+    else {
+        echo '{"error":{"text":"A name and color is required."}}';
+    }
 }
 
 function getEmployees() {

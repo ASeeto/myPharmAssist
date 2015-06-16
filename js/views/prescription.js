@@ -8,23 +8,14 @@ var SLIMLOC = BASEURL+PROJECT+'/api';
 window.PrescriptionView = Backbone.View.extend({
 
     initialize:function () {
-        this.profiles = new ProfilesView();
+        this.profiles = new ProfileCollection();
+        this.profiles.getProfiles();
+        this.profilesView = new ProfilesView({model: this.profiles, className: 'profiles'});
     },
 
     render:function () {
         $(this.el).html(this.template());
-
-        var profiles = new ProfileCollection();
-        profiles.fetch({
-            success: function (profiles) {
-                var template = _.template($('#item-list-template').html(), {profiles: profiles.models});
-                that.$el.html(template);
-            },
-            error: function (){
-                that.$el.html( ' Error when fetching collection. ');
-            }
-        })
-
+        $('#profiles', this.el).append(this.profilesView.render().el);
         /** Execute function after render completes
           * Solution Link: http://stackoverflow.com/a/9145790
           */
@@ -54,10 +45,18 @@ window.PrescriptionView = Backbone.View.extend({
             dataType:"json",
             data: formValues,
             success:function (data) {
-                console.log(data);
+                if(data.error) {  // If there is an error, show the error messages
+                    $('.alert-error').text(data.error.text).show();
+                }else{
+                    console.log('Created profile succesfully.');
+                    $('.bs-example-modal-sm').modal('hide');
+                }
+            },
+            error:function(data) {
+                alert('Error creating profile.');
             }
         });
-    }
+    },
 
     select: function(menuItem) {
         $('.nav li').removeClass('active');

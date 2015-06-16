@@ -15,6 +15,19 @@ window.ProfileCollection = Backbone.Collection.extend({
 
     model: Profile,
 
-    url:SLIMLOC+'/profiles'
+    url:SLIMLOC+'/profiles',
+
+    getProfiles:function() {
+        var url = SLIMLOC+'/profiles';
+        var self = this;
+        $.ajax({
+            url:url,
+            dataType:"json",
+            success:function (data) {
+                console.log("success: " + data.length);
+                self.reset(data);
+            }
+        });
+    }
 
 });
