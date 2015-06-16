@@ -256,7 +256,7 @@ function insertProfile() {
 
             $db = null;
 
-            return true;
+            echo true;
 
         } catch(PDOException $e) {
             echo '{"error":{"text":'. $e->getMessage() .'}}';
