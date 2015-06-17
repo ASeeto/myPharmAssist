@@ -72,7 +72,16 @@
 .profile {
   box-sizing: border-box;
   padding: 30px;
-  border: 1px #000 solid; 
-  border-radius: 4px;
   text-align: center;
+}
+
+.profile .profile-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.profile .profile-button {
+  display: none;
+  float:left;
 }

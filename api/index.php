@@ -205,7 +205,7 @@ function getProfiles() {
         $user_id = getSessionId();
         
         /** Use session ID to get profiles */
-        $sql = "SELECT p.name, p.color FROM profiles p LEFT JOIN userprofiles up ON p.id = up.profile_id WHERE up.user_id = :user_id;";
+        $sql = "SELECT p.id, p.name, p.color FROM profiles p LEFT JOIN userprofiles up ON p.id = up.profile_id WHERE up.user_id = :user_id;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam("user_id", $user_id);
         $stmt->execute();

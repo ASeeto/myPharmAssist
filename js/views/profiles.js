@@ -34,9 +34,15 @@ window.ProfileView = Backbone.View.extend({
 
     render:function () {
         var profile = this.model.toJSON();
-        var html =  '<h2>' + profile.name + '</h2>';
-        $(this.el).html(html);
+        var delete_button = $('<button type="button" class="btn profile-button btn-danger"  data-toggle="modal" data-target=".delete-profile">-</button>');
+        var update_button = $('<button type="button" class="btn profile-button btn-warning" data-toggle="modal" data-target=".update-profile">Edit</button>');
+        var buttons = $('<div class="profile-buttons"></div>')
+        $(buttons).append(delete_button);
+        $(buttons).append(update_button);
+        $(this.el).attr('id', profile.id);
         $(this.el).css({'background-color':profile.color});
+        $(this.el).html(profile.name);
+        $(this.el).append(buttons);
         return this;
     }
 
