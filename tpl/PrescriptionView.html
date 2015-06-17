@@ -4,7 +4,7 @@
     
     <p>&nbsp;</p>
 
-    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".insert-profile">+</button>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".insert-profile">Create New</button>
 
     <p>&nbsp;</p>
 
@@ -17,17 +17,17 @@
             <div class="alert alert-error alert-danger" style="display:none;"></div>
             <form class="form-horizontal">
               <div class="form-group">
-                <label for="inputName" class="col-sm-2 control-label">Name</label>
+                <label for="insertName" class="col-sm-2 control-label">Name</label>
                 <div class="col-sm-10">
-                  <input class="form-control" type="text" id="inputName" placeholder="Name">
+                  <input class="form-control" type="text" id="insertName" placeholder="Name">
                 </div>
               </div>
               <div class="form-group">
-                <label for="inputColor" class="col-sm-2 control-label">Color</label>
+                <label for="insertColor" class="col-sm-2 control-label">Color</label>
                 <div class="col-sm-10">
                   <div class="input-group pick-color">
                     <span class="input-group-addon"><i></i></span>
-                    <input class="form-control" type="text" id="inputColor" placeholder="Color" value="00f">
+                    <input class="form-control" type="text" id="insertColor" placeholder="Color" value="00f">
                   </div>
                 </div>
               </div>
@@ -48,23 +48,23 @@
             <div class="alert alert-error alert-danger" style="display:none;"></div>
             <form class="form-horizontal">
               <div class="form-group">
-                <label for="inputName" class="col-sm-2 control-label">Name</label>
+                <label for="updateName" class="col-sm-2 control-label">Name</label>
                 <div class="col-sm-10">
-                  <input class="form-control" type="text" id="inputName" placeholder="Name">
+                  <input class="form-control" type="text" id="updateName" placeholder="Name">
                 </div>
               </div>
               <div class="form-group">
-                <label for="inputColor" class="col-sm-2 control-label">Color</label>
+                <label for="updateColor" class="col-sm-2 control-label">Color</label>
                 <div class="col-sm-10">
                   <div class="input-group pick-color">
                     <span class="input-group-addon"><i></i></span>
-                    <input class="form-control" type="text" id="inputColor" placeholder="Color" value="00f">
+                    <input class="form-control" type="text" id="updateColor" placeholder="Color" value="00f">
                   </div>
                 </div>
               </div>
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                  <button class="form-control btn btn-success" type="submit" id="insertProfile">Create Profile</button>
+                  <button id="update" class="form-control btn btn-success" type="submit">Update Profile</button>
                 </div>
               </div>
             </form>
@@ -80,10 +80,10 @@
             <form class="form-horizontal">
               <div class="form-group">
                 <div class="col-sm-6">
-                  <button class="form-control btn btn-success" type="submit">Yes</button>
+                  <button id="confirm" class="form-control btn btn-success" type="submit">Yes</button>
                 </div>
                 <div class="col-sm-6">
-                  <button class="form-control btn btn-danger" type="submit">No</button>
+                  <button id="cancel" class="form-control btn btn-danger" type="submit">No</button>
                 </div>
               </div>
             </form>

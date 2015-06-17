@@ -10,6 +10,8 @@ $app->post('/login', 'login');
 $app->post('/logout', 'logout');
 $app->post('/register', 'register');
 $app->post('/insertProfile', authorize('user'), 'insertProfile');
+$app->post('/deleteProfile', authorize('user'), 'deleteProfile');
+$app->post('/updateProfile', authorize('user'), 'updateProfile');
 $app->get('/session', authorize('user'));
 $app->get('/profiles', authorize('user'), 'getProfiles');
 $app->get('/employees', authorize('user'),'getEmployees');
@@ -232,10 +234,6 @@ function insertProfile() {
         $color = $_POST['color'];
 
         try {
-
-            /** Connect to the database */
-            $db = getConnection();
-
             /** Create the new profile */
             $db = getConnection();
             $sql = "INSERT INTO profiles(name,color) VALUES(:name, :color);";
@@ -251,6 +249,67 @@ function insertProfile() {
             $sql = "INSERT INTO userprofiles(user_id,profile_id) VALUES(:user_id, :profile_id);";
             $stmt = $db->prepare($sql);
             $stmt->bindParam("user_id", $user_id);
+            $stmt->bindParam("profile_id", $profile_id);
+            $stmt->execute();
+
+            $db = null;
+
+            echo true;
+
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+    else {
+        echo '{"error":{"text":"A name and color is required."}}';
+    }
+}
+
+function deleteProfile() {
+    /** Initialize variables for values taken from request */
+    $user_id = getSessionId();
+    $profile_id = $_POST['id'];
+
+    try {
+        /** Create the new profile */
+        $db = getConnection();
+        $sql = "DELETE FROM profiles WHERE id = :profile_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("profile_id", $profile_id);
+        $stmt->execute();
+        
+        /** Add the new profile for the current user in the userprofiles table */
+        $sql = "DELETE FROM userprofiles WHERE user_id = :user_id AND profile_id = :profile_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("user_id", $user_id);
+        $stmt->bindParam("profile_id", $profile_id);
+        $stmt->execute();
+
+        $db = null;
+
+        echo true;
+
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function updateProfile() {
+    if(!empty($_POST['name']) && !empty($_POST['color'])) {
+    
+        /** Initialize variables for values taken from request */
+        $profile_id = $_POST['id'];
+        $name = $_POST['name'];
+        $color = $_POST['color'];
+
+        try {
+
+            /** Create the new profile */
+            $db = getConnection();
+            $sql = "UPDATE profiles SET name = :name, color = :color WHERE id = :profile_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("name", $name);
+            $stmt->bindParam("color", $color);
             $stmt->bindParam("profile_id", $profile_id);
             $stmt->execute();
 
