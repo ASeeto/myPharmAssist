@@ -24,7 +24,6 @@ window.ProfileCollection = Backbone.Collection.extend({
             url:url,
             dataType:"json",
             success:function (data) {
-                console.log("success: " + data.length);
                 self.reset(data);
             }
         });

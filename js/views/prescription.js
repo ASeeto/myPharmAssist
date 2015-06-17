@@ -28,7 +28,9 @@ window.PrescriptionView = Backbone.View.extend({
     },
 
     events: {
-        "click #insertProfile": "insertProfile"
+        "click #insertProfile": "insertProfile",
+        "click #confirm_delete": "refresh",
+        "click #confirm_update": "refresh"
     },
 
     insertProfile: function() {
@@ -39,6 +41,7 @@ window.PrescriptionView = Backbone.View.extend({
             name: $('#insertName').val(),
             color: $('#insertColor').val()
         };
+        var that = this;
         $.ajax({
             url:url,
             type:'POST',
@@ -50,12 +53,17 @@ window.PrescriptionView = Backbone.View.extend({
                 }else{
                     console.log('Created profile succesfully.');
                     $('.insert-profile').modal('hide');
+                    that.refresh();
                 }
             },
             error:function(data) {
                 alert('Error creating profile.');
             }
         });
+    },
+
+    refresh: function() {
+        this.profiles.getProfiles();
     },
 
     select: function(menuItem) {

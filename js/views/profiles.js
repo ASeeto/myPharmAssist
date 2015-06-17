@@ -57,7 +57,7 @@ window.ProfileView = Backbone.View.extend({
     },
 
     getDetails: function() {
-        console.log('Clicked');
+        // console.log('Clicked');
     },
 
     showButtons: function() {
@@ -70,7 +70,7 @@ window.ProfileView = Backbone.View.extend({
 
     deleteProfile: function() {
         var profile = $(this.el);
-        $('#confirm').on("click", function(event){
+        $('#confirm_delete').off("click").on("click", function(event){
             event.preventDefault();
             var pid = profile.attr('id');
             var url = SLIMLOC+'/deleteProfile';
@@ -92,7 +92,7 @@ window.ProfileView = Backbone.View.extend({
                 }
             });
         });
-        $('#cancel').on("click", function(event){
+        $('#cancel_delete').off("click").on("click", function(event){
             event.preventDefault();
             $('.delete-profile').modal('hide');
         });
@@ -100,8 +100,9 @@ window.ProfileView = Backbone.View.extend({
 
     updateProfile: function() {
         var profile = $(this.el);
-        $('#update').on("click", function(event){
+        $('#confirm_update').off("click").on("click", function(event){
             event.preventDefault();
+            $('#confirm_update').off();
             var pid = profile.attr('id');
             var url = SLIMLOC+'/updateProfile';
             var formValues = {
@@ -127,6 +128,10 @@ window.ProfileView = Backbone.View.extend({
                     alert('Error updating profile.');
                 }
             });
+        });
+        $('#cancel_update').off("click").on("click", function(event){
+            event.preventDefault();
+            $('.update-profile').modal('hide');
         });
     }
 });
