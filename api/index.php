@@ -9,17 +9,13 @@ $app = new Slim();
 $app->post('/login', 'login');
 $app->post('/logout', 'logout');
 $app->post('/register', 'register');
+$app->get('/session', authorize('user'));
+$app->get('/profiles', authorize('user'), 'getProfiles');
+$app->get('/profiles/:id', authorize('user'), 'getProfile');
+$app->get('/prescriptions', authorize('user'), 'getPrescriptions');
 $app->post('/insertProfile', authorize('user'), 'insertProfile');
 $app->post('/deleteProfile', authorize('user'), 'deleteProfile');
 $app->post('/updateProfile', authorize('user'), 'updateProfile');
-$app->get('/session', authorize('user'));
-$app->get('/profiles', authorize('user'), 'getProfiles');
-$app->get('/employees', authorize('user'),'getEmployees');
-$app->get('/employees/:id', authorize('user'),  'getEmployee');
-$app->get('/employees/:id/reports', authorize('user'),  'getReports');
-$app->get('/employees/search/:query', authorize('user'), 'getEmployeesByName');
-$app->get('/employees/modifiedsince/:timestamp', authorize('user'), 'findByModifiedDate');
-
 $app->run();
 
 /**
@@ -168,12 +164,12 @@ function authorize($role = "user") {
             }
             else {
                 // If a user is logged in, but doesn't have permissions, return 403
-                $app->halt(403, 'You shall not pass!');
+                $app->halt(403, 'You do not have the correct permissions to view this page.');
             }
         }
         else {
             // If a user is not logged in at all, return a 401
-            $app->halt(401, 'You shall not pass!');
+            $app->halt(401, 'Please login before continuing.');
         }
     };
 }
@@ -182,7 +178,7 @@ function getSessionId() {
     /** Get current session email  */
     $email = $_SESSION['user']['email'];
     try {
-        /** Connect to database  */
+        /** Connect to database */
         $db = getConnection();
 
         /** Use email to find current session ID */
@@ -202,7 +198,7 @@ function getProfiles() {
     /** Get current session email  */
     $email = $_SESSION['user']['email'];
     try {
-        /** Connect to database  */
+        /** Connect to database */
         $db = getConnection();
         $user_id = getSessionId();
         
@@ -220,6 +216,49 @@ function getProfiles() {
             echo $_GET['callback'] . '(' . json_encode($profiles) . ');';
         }
 
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function getProfile($id) {
+    /** Get current session email  */
+    $email = $_SESSION['user']['email'];
+    try {
+        /** Connect to database */
+        $db = getConnection();
+        $user_id = getSessionId();
+        $profile_id = $id;
+        /** Use session ID to get profile */
+        $sql = "SELECT * FROM userprofiles up WHERE up.user_id = :user_id AND up.profile_id = :profile_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("user_id", $user_id);
+        $stmt->bindParam("profile_id", $profile_id);
+        $stmt->execute();
+        $row = $stmt->rowCount();
+
+        /** Verify this profile belongs to this user */
+        if($row){
+            /** Get the user profile */
+            $sql = "SELECT p.id, p.name, p.color FROM profiles p WHERE p.id = :profile_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("profile_id", $profile_id);
+            $stmt->execute();
+            $profile = $stmt->fetchObject();
+            // Include support for JSONP requests
+            if (!isset($_GET['callback'])) {
+                echo json_encode($profile);
+            } else {
+                echo $_GET['callback'] . '(' . json_encode($profile) . ');';
+            }
+        }
+        /** Insert new user into users table */
+        else{
+            $app = Slim::getInstance();
+            // If a user is logged in, but doesn't have permissions, return 403
+            $app->halt(403, 'You do not have the correct permissions to view this page.');
+            // echo '{"error":{"text":You do not have the correct permissions to view this page.}}';
+        }
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
@@ -326,132 +365,26 @@ function updateProfile() {
     }
 }
 
-function getEmployees() {
-
-    if (isset($_GET['name'])) {
-        return getEmployeesByName($_GET['name']);
-    } else if (isset($_GET['modifiedSince'])) {
-        return getModifiedEmployees($_GET['modifiedSince']);
-    }
-
-    $sql = "select e.id, e.firstName, e.lastName, e.title, count(r.id) reportCount " .
-            "from employee e left join employee r on r.managerId = e.id " .
-            "group by e.id order by e.lastName, e.firstName";
+function getPrescriptions() {
+    /** Get current session email  */
+    $email = $_SESSION['user']['email'];
     try {
+        /** Connect to database */
         $db = getConnection();
-        $stmt = $db->query($sql);
-        $employees = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($employees);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($employees) . ');';
-        }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-}
-
-function getEmployee($id) {
-    $sql = "select e.id, e.firstName, e.lastName, e.title, e.officePhone, e.cellPhone, e.email, e.managerId, e.twitterId, m.firstName managerFirstName, m.lastName managerLastName, count(r.id) reportCount " .
-            "from employee e " .
-            "left join employee r on r.managerId = e.id " .
-            "left join employee m on e.managerId = m.id " .
-            "where e.id=:id";
-    try {
-        $db = getConnection();
+        $user_id = getSessionId();
+        
+        /** Use session ID to get prescriptions */
+        $sql = "SELECT p.id, p.name, p.dose, p.frequency FROM prescriptions p LEFT JOIN profileprescriptions pp ON p.id = pp.profile_id WHERE pp.user_id = :user_id;";
         $stmt = $db->prepare($sql);
-        $stmt->bindParam("id", $id);
+        $stmt->bindParam("user_id", $user_id);
         $stmt->execute();
-        $employee = $stmt->fetchObject();
-        $db = null;
+        $prescriptions = $stmt->fetchAll(PDO::FETCH_OBJ);
 
         // Include support for JSONP requests
         if (!isset($_GET['callback'])) {
-            echo json_encode($employee);
+            echo json_encode($prescriptions);
         } else {
-            echo $_GET['callback'] . '(' . json_encode($employee) . ');';
-        }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-}
-
-function getReports($id) {
-
-    $sql = "select e.id, e.firstName, e.lastName, e.title, count(r.id) reportCount " .
-            "from employee e left join employee r on r.managerId = e.id " .
-            "where e.managerId=:id " .
-            "group by e.id order by e.lastName, e.firstName";
-
-    try {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam("id", $id);
-        $stmt->execute();
-        $employees = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($employees);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($employees) . ');';
-        }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
-    }
-}
-
-function getEmployeesByName($name) {
-    $sql = "select e.id, e.firstName, e.lastName, e.title, count(r.id) reportCount " .
-            "from employee e left join employee r on r.managerId = e.id " .
-            "WHERE UPPER(CONCAT(e.firstName, ' ', e.lastName)) LIKE :name " .
-            "group by e.id order by e.lastName, e.firstName";
-    try {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $name = "%".$name."%";
-        $stmt->bindParam("name", $name);
-        $stmt->execute();
-        $employees = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($employees);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($employees) . ');';
-        }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}'; 
-    }
-}
-
-function getModifiedEmployees($modifiedSince) {
-    if ($modifiedSince == 'null') {
-        $modifiedSince = "1000-01-01";
-    }
-    $sql = "select * from employee WHERE lastModified > :modifiedSince";
-    try {
-        $db = getConnection();
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam("modifiedSince", $modifiedSince);
-        $stmt->execute();
-        $employees = $stmt->fetchAll(PDO::FETCH_OBJ);
-        $db = null;
-
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($employees);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($employees) . ');';
+            echo $_GET['callback'] . '(' . json_encode($prescriptions) . ');';
         }
 
     } catch(PDOException $e) {
@@ -463,7 +396,7 @@ function getConnection() {
     $dbhost="localhost";
     $dbuser="root";
     $dbpass="";
-    $dbname="project";
+    $dbname="";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);  
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;

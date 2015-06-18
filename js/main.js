@@ -16,6 +16,7 @@ $.ajaxSetup({
         403: function() {
             // 403 -- Access denied
             window.location.replace(BASEURL+PROJECT+'/#denied');
+            alert('This page cannot be accessed.');
         }
     }
 });
@@ -28,10 +29,10 @@ window.Router = Backbone.Router.extend({
         "logout": "logout",
         "home": "home",
         "pharmacy": "pharmacy",
-        "prescription": "prescription",
+        "profiles": "profiles",
+        // "profiles/:id": "profileDetails",
         "calendar": "calendar",
         "contact": "contact",
-        "employees/:id": "employeeDetails",
         "register":"register"
     },
 
@@ -109,24 +110,33 @@ window.Router = Backbone.Router.extend({
         });
     },
 
-    prescription: function () {
+    profiles: function () {
         this.headerView.select('prescription-menu');
-        var page = 'prescription';
+        var page = 'profiles';
         var url = SLIMLOC+'/session';
         $.ajax({
             url:url,
             type:'GET',
             success:function (response) {
                 window.location.replace(BASEURL+PROJECT+'/#'+page);
-                if (!this.prescriptionView) {
-                    this.prescriptionView = new PrescriptionView();
-                    this.prescriptionView.render();
+                if (!this.profilesView) {
+                    this.profilesView = new ProfilesView();
+                    this.profilesView.render();
                 }
-                $('#content').html(this.prescriptionView.el);
+                $('#content').html(this.profilesView.el);
             },
             error:function () {
                 window.location.replace(BASEURL+PROJECT+'/#login');
                 $('.nav li').removeClass('active');
+            }
+        });
+    },
+
+    profileDetails: function(id) {
+        var profile = new Profile({id: id});
+        profile.fetch({
+            success: function (data) {
+                $('#content').html(new ProfileDetailsView({model: data}).render().el);
             }
         });
     },
@@ -160,24 +170,12 @@ window.Router = Backbone.Router.extend({
         }
         $('#content').html(this.contactView.el);
         this.headerView.select('contact-menu');
-    },
-
-    employeeDetails: function (id) {
-        var employee = new Employee({id: id});
-        employee.fetch({
-            success: function (data) {
-                // Note that we could also 'recycle' the same instance of EmployeeFullView
-                // instead of creating new instances
-                $('#content').html(new EmployeeView({model: data}).render().el);
-            }
-        });
     }
 
 });
 
 templates = [ "CalendarView", "ContactView", "HeaderView", "HomeView", "LoginView", 
-              "PharmacyView", "PrescriptionView", "RegisterView", "EmployeeView", 
-              "EmployeeSummaryView", "EmployeeListItemView" ]
+              "PharmacyView", "ProfilesView", "ProfileDetailsView", "RegisterView" ];
 
 templateLoader.load(templates,
     function () {

@@ -1,19 +1,19 @@
 <div>
-    <h1>Prescriptions</h1>
-    <p>Create and navigate stored profiles.</p>
-    
+    <h1>Profile Details</h1>
+    <div id="profiledetails"></div>
+
+    <p>&nbsp;</p><br/>
+
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".insert-prescription">New Prescription</button>
+
     <p>&nbsp;</p>
 
-    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".insert-profile">Create New</button>
+    <div id="prescriptions"></div><div>
 
-    <p>&nbsp;</p>
-
-    <div id="profiles"></div>
-
-    <div class="modal fade insert-profile" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal fade insert-prescription" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">     
-            <h2>New Profile</h2>
+            <h2>New Prescription</h2>
             <div class="alert alert-error alert-danger" style="display:none;"></div>
             <form class="form-horizontal">
               <div class="form-group">
@@ -23,17 +23,20 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="insertColor" class="col-sm-2 control-label">Color</label>
+                <label for="insertDose" class="col-sm-2 control-label">Dose</label>
                 <div class="col-sm-10">
-                  <div class="input-group pick-color">
-                    <span class="input-group-addon"><i></i></span>
-                    <input class="form-control" type="text" id="insertColor" placeholder="Color" value="00f">
-                  </div>
+                  <input class="form-control" type="text" id="insertDose" placeholder="Dose">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="insertFrequency" class="col-sm-2 control-label">Frequency</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" id="insertFrequency" placeholder="Frequency">
                 </div>
               </div>
               <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                  <button class="form-control btn btn-success" type="submit" id="insertProfile">Create Profile</button>
+                  <button class="form-control btn btn-success" type="submit" id="insertPrescription">Create Prescription</button>
                 </div>
               </div>
             </form>

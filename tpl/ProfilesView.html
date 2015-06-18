@@ -1,0 +1,96 @@
+<div>
+    <h1>Profiles</h1>
+    <p>Create, delete, or update your stored prescription profiles.</p>
+    
+    <p>&nbsp;</p>
+
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".insert-profile">New Profile</button>
+
+    <p>&nbsp;</p>
+
+    <div id="profiles"></div>
+
+    <div class="modal fade insert-profile" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>New Profile</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="insertName" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" id="insertName" placeholder="Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="insertColor" class="col-sm-2 control-label">Color</label>
+                <div class="col-sm-10">
+                  <div class="input-group pick-color">
+                    <span class="input-group-addon"><i></i></span>
+                    <input class="form-control" type="text" id="insertColor" placeholder="Color" value="00f">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button class="form-control btn btn-success" type="submit" id="insertProfile">Create Profile</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade update-profile" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>Update Profile</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="updateName" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" id="updateName" placeholder="Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="updateColor" class="col-sm-2 control-label">Color</label>
+                <div class="col-sm-10">
+                  <div class="input-group pick-color">
+                    <span class="input-group-addon"><i></i></span>
+                    <input class="form-control" type="text" id="updateColor" placeholder="Color" value="00f">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <button id="confirm_update" class="form-control btn btn-success" type="submit">Update</button>
+                </div>
+                <div class="col-sm-6">
+                  <button id="cancel_update" class="form-control btn btn-danger" type="submit">Cancel</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade delete-profile" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>Are you sure you want to delete this profile?</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <button id="confirm_delete" class="form-control btn btn-success" type="submit">Yes</button>
+                </div>
+                <div class="col-sm-6">
+                  <button id="cancel_delete" class="form-control btn btn-danger" type="submit">No</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
