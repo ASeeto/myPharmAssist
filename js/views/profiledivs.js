@@ -40,112 +40,42 @@ window.ProfileDivView = Backbone.View.extend({
     },
 
     events: {
-        "click": "getDetails",
         "mouseenter": "showButtons",
-        "mouseleave": "hideButtons",
-        "click .delete-btn": "deleteProfile",
-        "click .update-btn": "updateProfile"
+        "mouseleave": "hideButtons"
     },
 
     render:function () {
-        var profile = this.model.toJSON();
+
+        /** Create buttons for Profile Div */
+        var buttons = $('<div class="profile-buttons"></div>')
         var delete_button = $('<button type="button" class="delete-btn btn profile-button btn-danger" ' + 
                               ' data-toggle="modal" data-target=".delete-profile">Delete</button>');
         var update_button = $('<button type="button" class="update-btn btn profile-button btn-warning" ' + 
                               ' data-toggle="modal" data-target=".update-profile">Edit</button>');
-        var buttons = $('<div class="profile-buttons"></div>')
         $(buttons).append(delete_button);
         $(buttons).append(update_button);
+
+        /** Create Profile Div */
+        var profile = this.model.toJSON();
         $(this.el).attr('id', profile.id);
         $(this.el).html(profile.name);
         $(this.el).css({'background-color':profile.color});
+
+        /** Append buttons */
         $(this.el).append(buttons);
+
+        /** Return Profile */
         return this;
+
     },
 
-    getDetails: function(event) {
-        // if(!$(event.currentTarget).is(':button')){
-        //     var profile = $(this.el);
-        //     var pid = profile.attr('id');
-        //     window.location.replace(BASEURL+PROJECT+'/#profiles/'+pid);
-        // }
-    },
-
+    /** Show this profile's buttons */
     showButtons: function() {
         $('.profile-button', this.el).show();
     },
 
+    /** Hide this profile's buttons */
     hideButtons: function() {
-        $('.profile-button', this.el).fadeOut('fast');
-    },
-
-    deleteProfile: function(event) {
-        $(this.el).off("click"), this.getDetails(event);
-        var profile = $(this.el);
-        $('#confirm_delete').off("click").on("click", function(event){
-            event.preventDefault();
-            var pid = profile.attr('id');
-            var url = SLIMLOC+'/deleteProfile';
-            $.ajax({
-                url:url,
-                type:'POST',
-                dataType:"json",
-                data: {id: pid},
-                success:function (data) {
-                    if(data.error) {  // If there is an error, show the error messages
-                        $('.alert-error').text(data.error.text).show();
-                    }else{
-                        console.log('Deleted profile succesfully.');
-                        $('.delete-profile').modal('hide');
-                        // $('.modal-backdrop').remove();
-                    }
-                },
-                error:function(data) {
-                    alert('Error deleting profile.');
-                }
-            });
-        });
-        $('#cancel_delete').off("click").on("click", function(event){
-            event.preventDefault();
-            $('.delete-profile').modal('hide');
-        });
-    },
-
-    updateProfile: function(event) {
-        var profile = $(this.el);
-        $('#confirm_update').off("click").on("click", function(event){
-            event.preventDefault();
-            $('#confirm_update').off();
-            var pid = profile.attr('id');
-            var url = SLIMLOC+'/updateProfile';
-            var formValues = {
-                id: pid,
-                name: $('#updateName').val(),
-                color: $('#updateColor').val()
-            };
-            console.log(formValues);
-            $.ajax({
-                url:url,
-                type:'POST',
-                dataType:"json",
-                data: formValues,
-                success:function (data) {
-                    if(data.error) {  // If there is an error, show the error messages
-                        $('.alert-error').text(data.error.text).show();
-                    }else{
-                        console.log('Updated profile succesfully.');
-                        $('.update-profile').modal('hide');
-                        // $('.modal-backdrop').remove();
-                    }
-                },
-                error:function(data) {
-                    alert('Error updating profile.');
-                }
-            });
-        });
-        $('#cancel_update').off("click").on("click", function(event){
-            event.preventDefault();
-            $('.update-profile').modal('hide');
-        });
+        $('.profile-button', this.el).hide();
     }
 });

@@ -30,7 +30,7 @@ window.Router = Backbone.Router.extend({
         "home": "home",
         "pharmacy": "pharmacy",
         "profiles": "profiles",
-        // "profiles/:id": "profileDetails",
+        "profiles/:id": "profileDetails",
         "calendar": "calendar",
         "contact": "contact",
         "register":"register"
@@ -175,7 +175,8 @@ window.Router = Backbone.Router.extend({
 });
 
 templates = [ "CalendarView", "ContactView", "HeaderView", "HomeView", "LoginView", 
-              "PharmacyView", "ProfilesView", "ProfileDetailsView", "RegisterView" ];
+              "PharmacyView", "ProfilesView", "ProfileDetailsView", "RegisterView",
+              "BaseModalView", "TestView" ];
 
 templateLoader.load(templates,
     function () {
