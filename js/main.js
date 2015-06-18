@@ -175,8 +175,7 @@ window.Router = Backbone.Router.extend({
 });
 
 templates = [ "CalendarView", "ContactView", "HeaderView", "HomeView", "LoginView", 
-              "PharmacyView", "ProfilesView", "ProfileDetailsView", "RegisterView",
-              "BaseModalView", "TestView" ];
+              "PharmacyView", "ProfilesView", "ProfileDetailsView", "RegisterView" ];
 
 templateLoader.load(templates,
     function () {

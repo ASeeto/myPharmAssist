@@ -124,6 +124,18 @@ window.ProfilesView = Backbone.View.extend({
         event.stopPropagation();
         /** Get the profile from the parent parent div of the button clicked */
         var profile = $(event.currentTarget).parent().parent();
+        /** Default the update modal values as the profile's current settings */
+        label = profile.clone().children().remove().end().text();
+        color = rgb2hex(profile.css('background-color'));
+        $('#updateName').val(label);
+        $('#updateColor').val(color);
+        /** Triggering events that occur when users type so colorpicker is accurate... */
+        $('#updateColor').keydown();
+        $('#updateColor').keypress();
+        $('#updateColor').keyup();
+        $('#updateColor').blur();
+        $('#updateColor').focus();
+        $('#updateColor').change();
         /** Open the update modal */
         $('.update-profile').modal('show');
         /** Confirm update of clicked profile */
@@ -136,7 +148,6 @@ window.ProfilesView = Backbone.View.extend({
                 name: $('#updateName').val(),
                 color: $('#updateColor').val()
             };
-            console.log(formValues);
             $.ajax({
                 url:url,
                 type:'POST',
