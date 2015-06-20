@@ -13,6 +13,8 @@ var geocoder = new google.maps.Geocoder();
 
 /** Initialize map creation and pharmacy search */
 function initialize(location) {
+    $('#map-canvas').css({'background-color':'#fff'});
+    $('#map-canvas').html('Loading...');
     createMap(location);
     pharmacySearch(location);
 }

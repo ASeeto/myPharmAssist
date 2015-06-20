@@ -23,9 +23,7 @@ window.PrescriptionsView = Backbone.View.extend({
         /** Append rendered prescriptions to template */
         $('#prescriptions', this.el).append(this.prescriptionsView.render().el);
 
-        /** Execute function after render completes
-          * Solution Link: http://stackoverflow.com/a/9145790
-          */
+        /** Execute function after render completes */
         setTimeout(function() {
             /** Requires form to have been rendered. */
             $('.pick-color').colorpicker({align:'left'});
@@ -47,7 +45,8 @@ window.PrescriptionsView = Backbone.View.extend({
     /** Open modal to allow for prescription creation */
     insertPrescription: function() {
         event.preventDefault();
-        $('.alert-error').hide();
+        $('.modal-content .alert-error').hide();
+        $('.popup-alert.alert-success').hide();
         var url = SLIMLOC+'/insertPrescription';
         var formValues = {
             profile_id: this.model.toJSON().id,
@@ -67,22 +66,25 @@ window.PrescriptionsView = Backbone.View.extend({
             data: formValues,
             success:function (data) {
                 if(data.error) {
-                    $('.alert-error').text(data.error.text).show();
+                    $('.modal-content .alert-error').text(data.error.text).show();
                 }else{
-                    console.log('Created prescription succesfully.');
-                    $('.insert-prescription').modal('hide');
                     that.refresh();
+                    $('.insert-prescription').modal('hide');
+                    $('.popup-alert.alert-success').text('Created prescription succesfully.').show();
+                    $('.popup-alert.alert-success').fadeOut(1600, "linear");
+                    console.log('Created prescription succesfully.');
                 }
             },
             error:function(data) {
-                alert('Error creating prescription.');
+                $('.popup-alert.alert-error').text('Error creating prescription.').show();
             }
         });
     },
 
     /** Duplicate a prescription */
     duplicatePrescription: function(event) {
-        $('.alert-error').hide();
+        $('.popup-alert.alert-error').hide();
+        $('.popup-alert.alert-success').hide();
         var that = this;
         /** Get the prescription from the parent parent div of the button clicked */
         var prescription = $(event.currentTarget).parent().parent();
@@ -118,25 +120,26 @@ window.PrescriptionsView = Backbone.View.extend({
                             $('.alert-error').text(data.error.text).show();
                         }else{
                             prescriptions.refresh();
-                            $('.alert-success').text('Duplicated prescription succesfully.').show();
-                            $('.alert-success').fadeOut(1600, "linear");
+                            $('.popup-alert.alert-success').text('Duplicated prescription succesfully.').show();
+                            $('.popup-alert.alert-success').fadeOut(1600, "linear");
                             console.log('Duplicated prescription succesfully.');
                         }
                     },
                     error:function(data) {
-                        alert('Error duplicating prescription.');
+                        $('.popup-alert.alert-error').text('Error duplicating prescription.').show();
                     }
                 });
             },
             error:function(data) {
-                alert('Error in duplicating prescription.');
+                $('.popup-alert.alert-error').text('Error duplicating prescription.').show();
             }
         });
     },
 
     /** Revert prescription to its original saved form */
     resetPrescription: function(event) {
-        $('.alert-error').hide();
+        $('.popup-alert.alert-error').hide();
+        $('.popup-alert.alert-success').hide();
         /** Get the prescription from the parent parent div of the button clicked */
         var prescription = $(event.currentTarget).parent().parent();
         /** Get input data from row */
@@ -155,12 +158,12 @@ window.PrescriptionsView = Backbone.View.extend({
                 $('td:nth-child(5) select', prescription).val(data[0].frequency);
                 $('td:nth-child(6) input', prescription).val(data[0].dispense);
                 $('td:nth-child(7) input', prescription).val(data[0].refills);
-                $('.alert-success').text('Reset prescription succesfully.').show();
-                $('.alert-success').fadeOut(1600, "linear");
+                $('.popup-alert.alert-success').text('Reset prescription succesfully.').show();
+                $('.popup-alert.alert-success').fadeOut(1600, "linear");
                 console.log('Reset prescription succesfully.');
             },
             error:function(data) {
-                alert('Error in resetting to saved prescription data.');
+                $('.popup-alert.alert-error').text('Error resetting prescription.').show();
             }
         });
     },
@@ -168,7 +171,8 @@ window.PrescriptionsView = Backbone.View.extend({
     /** Open modal to allow for prescription deletion */
     deletePrescription: function(event) {
         var that = this;
-        $('.alert-error').hide();
+        $('.popup-alert.alert-error').hide();
+        $('.popup-alert.alert-success').hide();
         /** Do not allow bubbling from button clicks */
         event.stopPropagation();
         /** Get the prescription from the parent parent div of the button clicked */
@@ -191,13 +195,15 @@ window.PrescriptionsView = Backbone.View.extend({
                         /** If error is returned from server, display message */
                         $('.alert-error').text(data.error.text).show();
                     }else{
-                        console.log('Deleted prescription succesfully.');
-                        $('.delete-prescription').modal('hide');
                         that.refresh();
+                        $('.delete-prescription').modal('hide');
+                        $('.popup-alert.alert-success').text('Deleted prescription succesfully.').show();
+                        $('.popup-alert.alert-success').fadeOut(1600, "linear");
+                        console.log('Deleted prescription succesfully.');
                     }
                 },
                 error:function(data) {
-                    alert('Error deleting prescription.');
+                    $('.popup-alert.alert-error').text('Error deleting prescription.').show();
                 }
             });
         });
@@ -211,6 +217,7 @@ window.PrescriptionsView = Backbone.View.extend({
     /** Commit updates to prescription */
     updatePrescription: function(event) {
         $('.alert-error').hide();
+        $('.alert-success').hide();
         /** Get the prescription from the parent parent div of the button clicked */
         var prescription = $(event.currentTarget).parent().parent();
         /** Get input data from row */
@@ -234,15 +241,15 @@ window.PrescriptionsView = Backbone.View.extend({
             success:function (data) {
                 if(data.error) {
                     /** If error is returned from server, display message */
-                    $('.alert-error').text(formValues.medication + ' did not save properly. ' + data.error.text).show();
+                    $('.popup-alert.alert-error').text(formValues.medication + ' did not save properly. ' + data.error.text).show();
                 }else{
-                    $('.alert-success').text('Updated prescription succesfully.').show();
-                    $('.alert-success').fadeOut(1600, "linear");
+                    $('.popup-alert.alert-success').text('Updated prescription succesfully.').show();
+                    $('.popup-alert.alert-success').fadeOut(1600, "linear");
                     console.log('Updated prescription succesfully.');
                 }
             },
             error:function(data) {
-                alert('Error updating prescription.');
+                $('.popup-alert.alert-error').text('Error updating prescription.').show();
             }
         });
     },
@@ -255,10 +262,13 @@ window.PrescriptionsView = Backbone.View.extend({
     /** Reset form inputs to defaults */
     resetForms: function() {
         $(this.el).find('form')[0].reset();
+        $('.modal-content .alert-error').hide();
     },
 
     /** Open modal to allow for profile deletion */
     deleteProfile: function(event) {
+        $('.popup-alert.alert-error').hide();
+        $('.popup-alert.alert-success').hide();
         var that = this;
         /** Do not allow bubbling from button clicks */
         event.stopPropagation();
@@ -279,7 +289,7 @@ window.PrescriptionsView = Backbone.View.extend({
                 success:function (data) {
                     if(data.error) {
                         /** If error is returned from server, display message */
-                        $('.alert-error').text(data.error.text).show();
+                        $('.popup-alert.alert-error').text(data.error.text).show();
                     }else{
                         console.log('Deleted profile succesfully.');
                         $('.delete-profile').modal('hide');
@@ -287,7 +297,7 @@ window.PrescriptionsView = Backbone.View.extend({
                     }
                 },
                 error:function(data) {
-                    alert('Error deleting profile.');
+                    $('.popup-alert.alert-error').text('Error deleting profile.').show();
                 }
             });
         });
@@ -300,6 +310,9 @@ window.PrescriptionsView = Backbone.View.extend({
 
     /** Open modal to allow for updates to be committed to profile */
     updateProfile: function(event) {
+        $('.modal-content .alert-error').hide();
+        $('.popup-alert.alert-error').hide();
+        $('.popup-alert.alert-success').hide();
         var that = this;
         /** Do not allow bubbling from button clicks */
         event.stopPropagation();
@@ -337,15 +350,17 @@ window.PrescriptionsView = Backbone.View.extend({
                 success:function (data) {
                     if(data.error) {
                         /** If error is returned from server, display message */
-                        $('.alert-error').text(data.error.text).show();
+                        $('.modal-content .alert-error').text(data.error.text).show();
                     }else{
-                        console.log('Updated profile succesfully.');
-                        $('.update-profile').modal('hide');
                         that.refreshProfile();
+                        $('.update-profile').modal('hide');
+                        $('.popup-alert.alert-success').text('Updated profile succesfully.').show();
+                        $('.popup-alert.alert-success').fadeOut(1600, "linear");
+                        console.log('Updated profile succesfully.');
                     }
                 },
                 error:function(data) {
-                    alert('Error updating profile.');
+                    $('.popup-alert.alert-error').text('Error updating profile.').show();
                 }
             });
         });
