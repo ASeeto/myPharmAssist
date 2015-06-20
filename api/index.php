@@ -19,7 +19,8 @@ $app->post('/deleteProfile', authorize('user'), 'deleteProfile');
 $app->post('/updateProfile', authorize('user'), 'updateProfile');
 
 /** Presriptions */
-$app->get('/prescriptions/:pid', authorize('user'), 'getPrescriptions');
+$app->get('/prescriptions/:profile_id', authorize('user'), 'getPrescriptions');
+$app->get('/prescriptions/:profile_id/:prescription_id', authorize('user'), 'getPrescription');
 $app->post('/insertPrescription', authorize('user'), 'insertPrescription');
 $app->post('/deletePrescription', authorize('user'), 'deletePrescription');
 $app->post('/updatePrescription', authorize('user'), 'updatePrescription');
@@ -402,9 +403,9 @@ function updateProfile() {
     }
 }
 
-function getPrescriptions($pid) {
+function getPrescriptions($profile_id) {
     /** Verify this profile belongs to this user */
-    $verified = verifyUserProfile($pid);
+    $verified = verifyUserProfile($profile_id);
     if($verified){
         try {
             /** Connect to database */
@@ -417,7 +418,7 @@ function getPrescriptions($pid) {
                     ON p.id = pp.prescription_id 
                     WHERE pp.profile_id = :profile_id;";
             $stmt = $db->prepare($sql);
-            $stmt->bindParam("profile_id", $pid);
+            $stmt->bindParam("profile_id", $profile_id);
             $stmt->execute();
             $prescriptions = $stmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -426,6 +427,36 @@ function getPrescriptions($pid) {
                 echo json_encode($prescriptions);
             } else {
                 echo $_GET['callback'] . '(' . json_encode($prescriptions) . ');';
+            }
+
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+}
+
+function getPrescription($profile_id, $prescription_id) {
+    /** Verify this profile belongs to this user */
+    $verified = verifyUserProfile($profile_id);
+    if($verified){
+        try {
+            /** Connect to database */
+            $db = getConnection();
+            
+            /** Use session ID to get prescriptions */
+            $sql = "SELECT p.id, p.medication, p.strength, p.quantity, p.route, p.frequency, p.dispense, p.refills 
+                    FROM prescriptions p 
+                    WHERE p.id = :prescription_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("prescription_id", $prescription_id);
+            $stmt->execute();
+            $prescription = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+            // Include support for JSONP requests
+            if (!isset($_GET['callback'])) {
+                echo json_encode($prescription);
+            } else {
+                echo $_GET['callback'] . '(' . json_encode($prescription) . ');';
             }
 
         } catch(PDOException $e) {
@@ -526,33 +557,63 @@ function deletePrescription() {
     }
 }
 
-// function updatePrescription() {
-//     if(!empty($_POST['name']) && !empty($_POST['color'])) {
-//         /** Initialize variables for values taken from request */
-//         $profile_id = $_POST['id'];
-//         $name = $_POST['name'];
-//         $color = $_POST['color'];
-//         try {
-//             /** Create the new profile */
-//             $db = getConnection();
-//             $sql = "UPDATE profiles 
-//                     SET name = :name, color = :color 
-//                     WHERE id = :profile_id;";
-//             $stmt = $db->prepare($sql);
-//             $stmt->bindParam("name", $name);
-//             $stmt->bindParam("color", $color);
-//             $stmt->bindParam("profile_id", $profile_id);
-//             $stmt->execute();
-//             $db = null;
-//             echo true;
-//         } catch(PDOException $e) {
-//             echo '{"error":{"text":'. $e->getMessage() .'}}';
-//         }
-//     }
-//     else {
-//         echo '{"error":{"text":"A name and color is required."}}';
-//     }
-// }
+function updatePrescription() {
+
+    /** Required Field Names */
+    $required = array('profile_id', 'prescription_id', 'medication', 'strength', 'quantity', 'route', 'frequency', 'dispense', 'refills');
+    /** Loop over field names, make sure each one exists and is not empty */
+    $error = false;
+    foreach($required as $field) {
+        if (empty($_POST[$field])) {
+            $error = true;
+        }
+    }
+
+    if(!$error) {
+
+        /** Initialize variables for values taken from request */
+        $profile_id      = $_POST['profile_id'];
+        $prescription_id = $_POST['prescription_id'];
+        $medication      = $_POST['medication'];
+        $strength        = $_POST['strength'];
+        $quantity        = $_POST['quantity'];
+        $route           = $_POST['route'];
+        $frequency       = $_POST['frequency'];
+        $dispense        = $_POST['dispense'];
+        $refills         = $_POST['refills'];
+        try {
+            /** Create the new profile */
+            $db = getConnection();
+            $sql = "UPDATE prescriptions 
+                    SET medication = :medication, 
+                        strength   = :strength, 
+                        quantity   = :quantity, 
+                        route      = :route, 
+                        frequency  = :frequency, 
+                        dispense   = :dispense, 
+                        refills    = :refills
+                    WHERE id = :prescription_id;";
+
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("medication"         , $medication);
+            $stmt->bindParam("strength"           , $strength);
+            $stmt->bindParam("quantity"           , $quantity);
+            $stmt->bindParam("route"              , $route);
+            $stmt->bindParam("frequency"          , $frequency);
+            $stmt->bindParam("dispense"           , $dispense);
+            $stmt->bindParam("refills"            , $refills);
+            $stmt->bindParam("prescription_id"    , $prescription_id);
+            $stmt->execute();
+            $db = null;
+            echo true;
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+    else {
+        echo '{"error":{"text":"All fields are required."}}';
+    }
+}
 
 function getConnection() {
     $dbhost="localhost";

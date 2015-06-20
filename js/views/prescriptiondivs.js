@@ -125,13 +125,14 @@ window.PrescriptionDivView = Backbone.View.extend({
         $(this.el).append($('<td></td>').append(frequency));
         $(this.el).append($('<td></td>').append(dispense));
         $(this.el).append($('<td></td>').append(refills));
-        $(this.el).append($('<td><button class="resetPrescription btn btn-primary glyphicon-refresh"></button></td>'));
+        $(this.el).append($('<td><button class="duplicatePrescription btn btn-primary glyphicon-duplicate"></button></td>'));
+        $(this.el).append($('<td><button class="resetPrescription btn btn-warning glyphicon-refresh"></button></td>'));
         $(this.el).append($('<td><button class="deletePrescription btn btn-danger glyphicon-trash"></button></td>'));
         $(this.el).append($('<td><button class="updatePrescription btn btn-success glyphicon-floppy-disk"></button></td>'));
 
         /** Assign model id as row id */
         $(this.el).attr('id', prescription.id);
-        /** Return rendered prescription row */]
+        /** Return rendered prescription row */
         return this;
     }
 });
