@@ -5,83 +5,128 @@ var BASEURL = '/projects/';
 var PROJECT = 'myPharmAssist';
 var SLIMLOC = BASEURL+PROJECT+'/api';
 
-window.ProfilesView = Backbone.View.extend({
+window.PrescriptionsView = Backbone.View.extend({
 
     initialize:function () {
-        console.log('Initializing Profiles View');
-        this.profiles = new ProfileCollection();
-        this.profilesView = new ProfileDivsView({model: this.profiles, className: 'profiles'});
+        console.log('Initializing Prescriptions View');
+        this.profile = new ProfileDivView({model: this.model}).render().el;
+        this.prescriptions = new PrescriptionCollection();
+        this.prescriptionsView = new PrescriptionsDivsView({model: this.prescriptions, className: 'prescriptions'});
     },
 
     render:function () {
         $(this.el).html(this.template());
-        /** Retrieve profiles to display from database */
-        this.profiles.getProfiles();
-        /** Append rendered profiles to template */
-        $('#profiles', this.el).append(this.profilesView.render().el);
+        /** Append this model */
+        $('#profiledetail', this.el).append(this.profile);
+        /** Retrieve prescriptions to display from database */
+        this.prescriptions.getPrescriptions(this.model.toJSON().id);
+        /** Append rendered prescriptions to template */
+        $('#prescriptions', this.el).append(this.prescriptionsView.render().el);
 
-        /** Execute function after render completes */
+        /** Execute function after render completes
+          * Solution Link: http://stackoverflow.com/a/9145790
+          */
         setTimeout(function() {
             /** Requires form to have been rendered. */
             $('.pick-color').colorpicker({align:'left'});
         }, 0);
-
         return this;
     },
 
     events: {
-        "click #insertProfile": "insertProfile",
-        "click .profile.col-md-4": "getDetails",
+        "click #insertPrescription": "insertPrescription",
         "click .delete-btn": "deleteProfile",
         "click .update-btn": "updateProfile",
+        "click .deletePrescription": "deletePrescription",
         "hidden.bs.modal .modal": "resetForms"
     },
 
-    /** Reset form inputs to defaults */
-    resetForms: function() {
-        $(this.el).find('form')[0].reset();
-    },
-
-    /** Retrieve details page for the profile that was clicked */
-    getDetails: function(event) {
-        // console.log(event.currentTarget);
-        if($(event.currentTarget).is(':button')){
-            console.log('Button clicked. Do nothing.');
-        } else {
-            var profile = $(event.currentTarget);
-            var pid = profile.attr('id');
-            window.location.replace(BASEURL+PROJECT+'/#profiles/'+pid);
-        }
-    },
-
-    /** Open modal to allow for profile creation */
-    insertProfile: function() {
-        var that = this;
-        event.preventDefault(); // Don't let this button submit the form
-        $('.alert-error').hide(); // Hide any errors on a new submit
-        var url = SLIMLOC+'/insertProfile';
+    /** Open modal to allow for prescription creation */
+    insertPrescription: function() {
+        event.preventDefault();
+        $('.alert-error').hide();
+        var url = SLIMLOC+'/insertPrescription';
         var formValues = {
-            name: $('#insertName').val(),
-            color: $('#insertColor').val()
+            profile_id: this.model.toJSON().id,
+            medication: $('#medication').val(),
+            strength:   $('#strength').val(),
+            quantity:   $('#quantity').val(),
+            route:      $('#route').val(),
+            frequency:  $('#frequency').val(),
+            dispense:   $('#dispense').val(),
+            refills:    $('#refills').val(),
         };
+        var that = this;
         $.ajax({
             url:url,
             type:'POST',
             dataType:"json",
             data: formValues,
             success:function (data) {
-                if(data.error) {  // If there is an error, show the error messages
+                if(data.error) {
                     $('.alert-error').text(data.error.text).show();
                 }else{
-                    console.log('Created profile succesfully.');
-                    $('.insert-profile').modal('hide');
+                    console.log('Created prescription succesfully.');
+                    $('.insert-prescription').modal('hide');
                     that.refresh();
                 }
             },
             error:function(data) {
-                alert('Error creating profile.');
+                alert('Error creating prescription.');
             }
         });
+    },
+
+    /** Open modal to allow for prescription deletion */
+    deletePrescription: function(event) {
+        var that = this;
+        /** Do not allow bubbling from button clicks */
+        event.stopPropagation();
+        /** Get the prescription from the parent parent div of the button clicked */
+        var prescription = $(event.currentTarget).parent().parent();
+        /** Open the delete modal */
+        $('.delete-prescription').modal('show');
+        /** Confirm deletion of clicked prescription */
+        $('#confirm_delete_prescription').off("click").on("click", function(event){
+            event.preventDefault();
+            var pid = prescription.attr('id');
+            var profile_id = this.model.toJSON().id;
+            var url = SLIMLOC+'/deletePrescription';
+            $.ajax({
+                url:url,
+                type:'POST',
+                dataType:"json",
+                data: {id: pid, profile_id: profile_id},
+                success:function (data) {
+                    if(data.error) {
+                        /** If error is returned from server, display message */
+                        $('.alert-error').text(data.error.text).show();
+                    }else{
+                        console.log('Deleted prescription succesfully.');
+                        $('.delete-prescription').modal('hide');
+                        that.redirect();
+                    }
+                },
+                error:function(data) {
+                    alert('Error deleting prescription.');
+                }
+            });
+        });
+        /** Cancel deletion of clicked prescription */
+        $('#cancel_delete_prescription').off("click").on("click", function(event){
+            event.preventDefault();
+            $('.delete-prescription').modal('hide');
+        });
+    },
+
+    /** Refresh prescriptions by resetting Collection data and retrieving prescriptions from database */
+    refresh: function() {
+        this.prescriptions.getPrescriptions(this.model.toJSON().id);
+    },
+
+    /** Reset form inputs to defaults */
+    resetForms: function() {
+        $(this.el).find('form')[0].reset();
     },
 
     /** Open modal to allow for profile deletion */
@@ -110,7 +155,7 @@ window.ProfilesView = Backbone.View.extend({
                     }else{
                         console.log('Deleted profile succesfully.');
                         $('.delete-profile').modal('hide');
-                        that.refresh();
+                        that.redirect();
                     }
                 },
                 error:function(data) {
@@ -168,7 +213,7 @@ window.ProfilesView = Backbone.View.extend({
                     }else{
                         console.log('Updated profile succesfully.');
                         $('.update-profile').modal('hide');
-                        that.refresh();
+                        that.refreshProfile();
                     }
                 },
                 error:function(data) {
@@ -183,14 +228,19 @@ window.ProfilesView = Backbone.View.extend({
         });
     },
 
-    /** Refresh profiles by resetting Collection data and retrieving profiles from database */
-    refresh: function() {
-        this.profiles.getProfiles();
+    redirect: function() {
+        window.location.replace(BASEURL+PROJECT+'/#profiles');
     },
 
-    select: function(menuItem) {
-        $('.nav li').removeClass('active');
-        $('.' + menuItem).addClass('active');
+    refreshProfile: function() {
+        var profile = new Profile({id: this.model.toJSON().id});
+        profile.fetch({
+            success: function (data) {
+                this.profile = new ProfileDivView({model: data}).render().el;
+                $('#profiledetail', this.el).children().remove();
+                $('#profiledetail', this.el).append(this.profile);
+            }
+        });
     }
 
 });

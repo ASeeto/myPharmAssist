@@ -10,12 +10,20 @@ $app->post('/login', 'login');
 $app->post('/logout', 'logout');
 $app->post('/register', 'register');
 $app->get('/session', authorize('user'));
+
+/** Profiles */
 $app->get('/profiles', authorize('user'), 'getProfiles');
 $app->get('/profiles/:id', authorize('user'), 'getProfile');
-$app->get('/prescriptions', authorize('user'), 'getPrescriptions');
 $app->post('/insertProfile', authorize('user'), 'insertProfile');
 $app->post('/deleteProfile', authorize('user'), 'deleteProfile');
 $app->post('/updateProfile', authorize('user'), 'updateProfile');
+
+/** Presriptions */
+$app->get('/prescriptions/:pid', authorize('user'), 'getPrescriptions');
+$app->post('/insertPrescription', authorize('user'), 'insertPrescription');
+$app->post('/deletePrescription', authorize('user'), 'deletePrescription');
+$app->post('/updatePrescription', authorize('user'), 'updatePrescription');
+
 $app->run();
 
 /**
@@ -194,16 +202,51 @@ function getSessionId() {
     }
 }
 
+function verifyUserProfile($id) {
+    try {
+
+        /** Connect to database */
+        $db = getConnection();
+        $user_id = getSessionId();
+        $profile_id = $id;
+
+        /** Use session ID to get profile */
+        $sql = "SELECT * FROM userprofiles up 
+                WHERE up.user_id = :user_id 
+                AND up.profile_id = :profile_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("user_id", $user_id);
+        $stmt->bindParam("profile_id", $profile_id);
+        $stmt->execute();
+        $row = $stmt->rowCount();
+
+        if($row){
+            return true; 
+        }
+        /** Halt app and throw Error Code 403 */
+        else{
+            $app = Slim::getInstance();
+            // If a user is logged in, but doesn't have permissions, return 403
+            $app->halt(403, 'You do not have the correct permissions to view this page.');
+        }
+
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
 function getProfiles() {
-    /** Get current session email  */
-    $email = $_SESSION['user']['email'];
     try {
         /** Connect to database */
         $db = getConnection();
         $user_id = getSessionId();
         
         /** Use session ID to get profiles */
-        $sql = "SELECT p.id, p.name, p.color FROM profiles p LEFT JOIN userprofiles up ON p.id = up.profile_id WHERE up.user_id = :user_id;";
+        $sql = "SELECT p.id, p.name, p.color 
+                FROM profiles p 
+                LEFT JOIN userprofiles up 
+                ON p.id = up.profile_id 
+                WHERE up.user_id = :user_id;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam("user_id", $user_id);
         $stmt->execute();
@@ -222,45 +265,30 @@ function getProfiles() {
 }
 
 function getProfile($id) {
-    /** Get current session email  */
-    $email = $_SESSION['user']['email'];
-    try {
-        /** Connect to database */
-        $db = getConnection();
-        $user_id = getSessionId();
-        $profile_id = $id;
-        /** Use session ID to get profile */
-        $sql = "SELECT * FROM userprofiles up WHERE up.user_id = :user_id AND up.profile_id = :profile_id;";
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam("user_id", $user_id);
-        $stmt->bindParam("profile_id", $profile_id);
-        $stmt->execute();
-        $row = $stmt->rowCount();
-
-        /** Verify this profile belongs to this user */
-        if($row){
+    /** Connect to database */
+    $db = getConnection();
+    /** Verify this profile belongs to this user */
+    $verified = verifyUserProfile($id);
+    if($verified){
+        try {
             /** Get the user profile */
-            $sql = "SELECT p.id, p.name, p.color FROM profiles p WHERE p.id = :profile_id;";
+            $sql = "SELECT p.id, p.name, p.color 
+                    FROM profiles p 
+                    WHERE p.id = :profile_id;";
             $stmt = $db->prepare($sql);
-            $stmt->bindParam("profile_id", $profile_id);
+            $stmt->bindParam("profile_id", $id);
             $stmt->execute();
+            $db = null;
             $profile = $stmt->fetchObject();
-            // Include support for JSONP requests
+            /** Include support for JSONP requests */
             if (!isset($_GET['callback'])) {
                 echo json_encode($profile);
             } else {
                 echo $_GET['callback'] . '(' . json_encode($profile) . ');';
             }
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
         }
-        /** Insert new user into users table */
-        else{
-            $app = Slim::getInstance();
-            // If a user is logged in, but doesn't have permissions, return 403
-            $app->halt(403, 'You do not have the correct permissions to view this page.');
-            // echo '{"error":{"text":You do not have the correct permissions to view this page.}}';
-        }
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
 
@@ -275,7 +303,8 @@ function insertProfile() {
         try {
             /** Create the new profile */
             $db = getConnection();
-            $sql = "INSERT INTO profiles(name,color) VALUES(:name, :color);";
+            $sql = "INSERT INTO profiles(name,color) 
+                    VALUES(:name, :color);";
             $stmt = $db->prepare($sql);
             $stmt->bindParam("name", $name);
             $stmt->bindParam("color", $color);
@@ -285,7 +314,8 @@ function insertProfile() {
             $profile_id = $db->lastInsertId('profiles');
             
             /** Add the new profile for the current user in the userprofiles table */
-            $sql = "INSERT INTO userprofiles(user_id,profile_id) VALUES(:user_id, :profile_id);";
+            $sql = "INSERT INTO userprofiles(user_id,profile_id) 
+                    VALUES(:user_id, :profile_id);";
             $stmt = $db->prepare($sql);
             $stmt->bindParam("user_id", $user_id);
             $stmt->bindParam("profile_id", $profile_id);
@@ -312,13 +342,16 @@ function deleteProfile() {
     try {
         /** Create the new profile */
         $db = getConnection();
-        $sql = "DELETE FROM profiles WHERE id = :profile_id;";
+        $sql = "DELETE FROM profiles 
+                WHERE id = :profile_id;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam("profile_id", $profile_id);
         $stmt->execute();
         
         /** Add the new profile for the current user in the userprofiles table */
-        $sql = "DELETE FROM userprofiles WHERE user_id = :user_id AND profile_id = :profile_id;";
+        $sql = "DELETE FROM userprofiles 
+                WHERE user_id = :user_id 
+                AND profile_id = :profile_id;";
         $stmt = $db->prepare($sql);
         $stmt->bindParam("user_id", $user_id);
         $stmt->bindParam("profile_id", $profile_id);
@@ -335,29 +368,33 @@ function deleteProfile() {
 
 function updateProfile() {
     if(!empty($_POST['name']) && !empty($_POST['color'])) {
-    
         /** Initialize variables for values taken from request */
         $profile_id = $_POST['id'];
         $name = $_POST['name'];
         $color = $_POST['color'];
+        /** Verify this profile belongs to this user */
+        $verified = verifyUserProfile($profile_id);
+        if($verified){
+            try {
 
-        try {
+                /** Create the new profile */
+                $db = getConnection();
+                $sql = "UPDATE profiles 
+                        SET name = :name, color = :color 
+                        WHERE id = :profile_id;";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam("name", $name);
+                $stmt->bindParam("color", $color);
+                $stmt->bindParam("profile_id", $profile_id);
+                $stmt->execute();
 
-            /** Create the new profile */
-            $db = getConnection();
-            $sql = "UPDATE profiles SET name = :name, color = :color WHERE id = :profile_id;";
-            $stmt = $db->prepare($sql);
-            $stmt->bindParam("name", $name);
-            $stmt->bindParam("color", $color);
-            $stmt->bindParam("profile_id", $profile_id);
-            $stmt->execute();
+                $db = null;
 
-            $db = null;
+                echo true;
 
-            echo true;
-
-        } catch(PDOException $e) {
-            echo '{"error":{"text":'. $e->getMessage() .'}}';
+            } catch(PDOException $e) {
+                echo '{"error":{"text":'. $e->getMessage() .'}}';
+            }
         }
     }
     else {
@@ -365,32 +402,157 @@ function updateProfile() {
     }
 }
 
-function getPrescriptions() {
-    /** Get current session email  */
-    $email = $_SESSION['user']['email'];
-    try {
-        /** Connect to database */
-        $db = getConnection();
-        $user_id = getSessionId();
-        
-        /** Use session ID to get prescriptions */
-        $sql = "SELECT p.id, p.name, p.dose, p.frequency FROM prescriptions p LEFT JOIN profileprescriptions pp ON p.id = pp.profile_id WHERE pp.user_id = :user_id;";
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam("user_id", $user_id);
-        $stmt->execute();
-        $prescriptions = $stmt->fetchAll(PDO::FETCH_OBJ);
+function getPrescriptions($pid) {
+    /** Verify this profile belongs to this user */
+    $verified = verifyUserProfile($pid);
+    if($verified){
+        try {
+            /** Connect to database */
+            $db = getConnection();
+            
+            /** Use session ID to get prescriptions */
+            $sql = "SELECT p.id, p.medication, p.strength, p.quantity, p.route, p.frequency, p.dispense, p.refills 
+                    FROM prescriptions p 
+                    LEFT JOIN profileprescriptions pp 
+                    ON p.id = pp.prescription_id 
+                    WHERE pp.profile_id = :profile_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("profile_id", $pid);
+            $stmt->execute();
+            $prescriptions = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        // Include support for JSONP requests
-        if (!isset($_GET['callback'])) {
-            echo json_encode($prescriptions);
-        } else {
-            echo $_GET['callback'] . '(' . json_encode($prescriptions) . ');';
+            // Include support for JSONP requests
+            if (!isset($_GET['callback'])) {
+                echo json_encode($prescriptions);
+            } else {
+                echo $_GET['callback'] . '(' . json_encode($prescriptions) . ');';
+            }
+
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
         }
-
-    } catch(PDOException $e) {
-        echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
+
+function insertPrescription() {
+
+    /** Required Field Names */
+    $required = array('profile_id', 'medication', 'strength', 'quantity', 'route', 'frequency', 'dispense', 'refills');
+    /** Loop over field names, make sure each one exists and is not empty */
+    $error = false;
+    foreach($required as $field) {
+        if (empty($_POST[$field])) {
+            $error = true;
+        }
+    }
+
+    if(!$error) {
+        /** Initialize variables for values taken from request */
+        $profile_id = $_POST['profile_id'];
+        $medication = $_POST['medication'];
+        $strength   = $_POST['strength'];
+        $quantity   = $_POST['quantity'];
+        $route      = $_POST['route'];
+        $frequency  = $_POST['frequency'];
+        $dispense   = $_POST['dispense'];
+        $refills    = $_POST['refills'];
+        
+        /** Verify this profile belongs to this user */
+        $verified = verifyUserProfile($profile_id);
+        if($verified){
+            try {
+                /** Create the new prescription */
+                $db = getConnection();
+                $sql = "INSERT INTO prescriptions(medication,strength,quantity,route,frequency,dispense,refills) 
+                        VALUES(:medication,:strength,:quantity,:route,:frequency,:dispense,:refills);";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam("medication" , $medication);
+                $stmt->bindParam("strength"   , $strength);
+                $stmt->bindParam("quantity"   , $quantity);
+                $stmt->bindParam("route"      , $route);
+                $stmt->bindParam("frequency"  , $frequency);
+                $stmt->bindParam("dispense"   , $dispense);
+                $stmt->bindParam("refills"    , $refills);
+                $stmt->execute();
+                /** Get last insert ID, the prescription just created from THIS connection */
+                $prescription_id = $db->lastInsertId('prescriptions');
+                /** Add the new prescription for the current profile in the profileprescriptions table */
+                $sql = "INSERT INTO profileprescriptions(profile_id, prescription_id) 
+                        VALUES(:profile_id, :prescription_id);";
+                $stmt = $db->prepare($sql);
+                $stmt->bindParam("profile_id", $profile_id);
+                $stmt->bindParam("prescription_id", $prescription_id);
+                $stmt->execute();
+                $db = null;
+                echo true;
+            } catch(PDOException $e) {
+                echo '{"error":{"text":'. $e->getMessage() .'}}';
+            }
+        }
+    }
+    else {
+        echo '{"error":{"text":"All fields are required."}}';
+    }
+}
+
+function deletePrescription() {
+    $prescription_id = $_POST['id'];
+    $profile_id = $_POST['profile_id'];
+
+    /** Verify this profile belongs to this user */
+    $verified = verifyUserProfile($profile_id);
+    if($verified){
+        try {
+            /** Create the new profile */
+            $db = getConnection();
+            $sql = "DELETE FROM prescriptions 
+                    WHERE id = :prescription_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("prescription_id", $prescription_id);
+            $stmt->execute();
+            /** Add the new profile for the current user in the userprofiles table */
+            $sql = "DELETE FROM profileprescriptions 
+                    WHERE profile_id = :profile_id 
+                    AND prescription_id = :prescription_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("profile_id", $profile_id);
+            $stmt->bindParam("prescription_id", $prescription_id);
+            $stmt->execute();
+            $db = null;
+            echo true;
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+}
+
+// function updatePrescription() {
+//     if(!empty($_POST['name']) && !empty($_POST['color'])) {
+//         /** Initialize variables for values taken from request */
+//         $profile_id = $_POST['id'];
+//         $name = $_POST['name'];
+//         $color = $_POST['color'];
+//         try {
+//             /** Create the new profile */
+//             $db = getConnection();
+//             $sql = "UPDATE profiles 
+//                     SET name = :name, color = :color 
+//                     WHERE id = :profile_id;";
+//             $stmt = $db->prepare($sql);
+//             $stmt->bindParam("name", $name);
+//             $stmt->bindParam("color", $color);
+//             $stmt->bindParam("profile_id", $profile_id);
+//             $stmt->execute();
+//             $db = null;
+//             echo true;
+//         } catch(PDOException $e) {
+//             echo '{"error":{"text":'. $e->getMessage() .'}}';
+//         }
+//     }
+//     else {
+//         echo '{"error":{"text":"A name and color is required."}}';
+//     }
+// }
 
 function getConnection() {
     $dbhost="localhost";

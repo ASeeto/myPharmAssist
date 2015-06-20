@@ -74,6 +74,10 @@ body {
   margin-bottom: 30px;
 }
 
+.profiles .profile {
+  cursor: pointer;
+}
+
 .profile {
   box-sizing: border-box;
   border: 5px solid #fff;
@@ -90,4 +94,21 @@ body {
 .profile .profile-button {
   display: none;
   float:left;
+}
+
+.profiledetail {
+  box-sizing: border-box;
+  border: 5px solid #fff;
+  padding: 30px;
+  text-align: center;
+}
+
+#prescriptions .btn {
+  font-family: 'Glyphicons Halflings';
+}
+
+@media (min-width: 768px) {
+  .insert-prescription label {
+    padding: 0;
+  }
 }

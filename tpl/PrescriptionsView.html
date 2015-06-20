@@ -1,0 +1,177 @@
+<div>
+    <h1>Prescriptions</h1>
+    <a href="#profiles">Back to Profiles</a>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <div id="profiledetail" class="col-md-offset-4 col-md-8"></div>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target=".insert-prescription">New Prescription</button>
+    <p>&nbsp;</p>
+    <div id="prescriptions"></div><div>
+
+    <div class="modal fade insert-prescription" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>New Prescription</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="medication" class="col-sm-4 control-label">Medication</label>
+                <div class="col-sm-8">
+                  <input class="form-control" type="text" id="medication" placeholder="Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="strength" class="col-sm-4 control-label">Strength</label>
+                <div class="col-sm-8">
+                  <input class="form-control" type="text" id="strength" placeholder="(in miligrams)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="quantity" class="col-sm-4 control-label">Quantity</label>
+                <div class="col-sm-8">
+                  <select id="quantity" class="form-control">
+                      <option disabled selected value="">Select # of Tablets</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="route" class="col-sm-4 control-label">Route</label>
+                <div class="col-sm-8">
+                  <select id="route" class="form-control">
+                      <option disabled selected value="">Select Route Type</option>
+                      <option value="PO">By Mouth (PO)</option>
+                      <option value="PR">Per Rectum (PR)</option>
+                      <option value="IM">Intramuscular (IM)</option>
+                      <option value="IV">Intravenous (IV)</option>
+                      <option value="ID">Intradermal (ID)</option>
+                      <option value="IN">Intranasal (IN)</option>
+                      <option value="TP">Topical (TP)</option>
+                      <option value="SL">Sublingually (SL)</option>
+                      <option value="BUCC">Buccal (BUCC)</option>
+                      <option value="IP">Intraperitoneal (IP)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="frequency" class="col-sm-4 control-label">Frequency</label>
+                <div class="col-sm-8">
+                  <select id="frequency" class="form-control">
+                      <option disabled selected value="">Select Frequency</option>
+                      <option value="D">Daily</option>
+                      <option value="EOD">Every Other Day</option>
+                      <option value="BID">Twice a Day (BID/b.i.d.)</option>
+                      <option value="TID">Three Times a Day (TID/t.i.d.)</option>
+                      <option value="QID">Four Times a Day (QID/q.id.)</option>
+                      <option value="QHS">Every Bedtime (QHS)</option>
+                      <option value="Q4h">Every 4 Hours (Q4h)</option>
+                      <option value="Q4-6h">Every 4-6 hours (Q4-6h)</option>
+                      <option value="QWK">Every Week (QWK)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="dispense" class="col-sm-4 control-label">Dispense</label>
+                <div class="col-sm-8">
+                  <input class="form-control" type="text" id="dispense" placeholder="Dispense Amount">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="refills" class="col-sm-4 control-label">Refills</label>
+                <div class="col-sm-8">
+                  <input class="form-control" type="text" id="refills" placeholder="# of allowed refills">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <button class="form-control btn btn-success" type="submit" id="insertPrescription">Create Prescription</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade delete-prescription" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>Are you sure you want to delete this prescription?</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <button id="confirm_delete_prescription" class="form-control btn btn-success" type="submit">Yes</button>
+                </div>
+                <div class="col-sm-6">
+                  <button id="cancel_delete_prescription" class="form-control btn btn-danger" type="submit">No</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade update-profile" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>Update Profile</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="updateProfileName" class="col-sm-2 control-label">Name</label>
+                <div class="col-sm-10">
+                  <input class="form-control" type="text" id="updateProfileName" placeholder="Name">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="updateColor" class="col-sm-2 control-label">Color</label>
+                <div class="col-sm-10">
+                  <div class="input-group pick-color">
+                    <span class="input-group-addon"><i></i></span>
+                    <input class="form-control" type="text" id="updateProfileColor" placeholder="Color" value="00f">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <button id="confirm_update_profile" class="form-control btn btn-success" type="submit">Update</button>
+                </div>
+                <div class="col-sm-6">
+                  <button id="cancel_update_profile" class="form-control btn btn-danger" type="submit">Cancel</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade delete-profile" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">     
+            <h2>Are you sure you want to delete this profile?</h2>
+            <div class="alert alert-error alert-danger" style="display:none;"></div>
+            <form class="form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-6">
+                  <button id="confirm_delete_profile" class="form-control btn btn-success" type="submit">Yes</button>
+                </div>
+                <div class="col-sm-6">
+                  <button id="cancel_delete_profile" class="form-control btn btn-danger" type="submit">No</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

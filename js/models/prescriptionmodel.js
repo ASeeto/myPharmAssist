@@ -17,8 +17,8 @@ window.PrescriptionCollection = Backbone.Collection.extend({
 
     url:SLIMLOC+'/prescriptions',
 
-    getPrescriptions:function() {
-        var url = SLIMLOC+'/prescriptions';
+    getPrescriptions:function(id) {
+        var url = SLIMLOC+'/prescriptions/'+id;
         var self = this;
         $.ajax({
             url:url,

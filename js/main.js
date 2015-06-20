@@ -30,7 +30,7 @@ window.Router = Backbone.Router.extend({
         "home": "home",
         "pharmacy": "pharmacy",
         "profiles": "profiles",
-        "profiles/:id": "profileDetails",
+        "profiles/:id": "prescriptions",
         "calendar": "calendar",
         "contact": "contact",
         "register":"register"
@@ -132,11 +132,11 @@ window.Router = Backbone.Router.extend({
         });
     },
 
-    profileDetails: function(id) {
+    prescriptions: function(id) {
         var profile = new Profile({id: id});
         profile.fetch({
             success: function (data) {
-                $('#content').html(new ProfileDetailsView({model: data}).render().el);
+                $('#content').html(new PrescriptionsView({model: data}).render().el);
             }
         });
     },
@@ -175,7 +175,7 @@ window.Router = Backbone.Router.extend({
 });
 
 templates = [ "CalendarView", "ContactView", "HeaderView", "HomeView", "LoginView", 
-              "PharmacyView", "ProfilesView", "ProfileDetailsView", "RegisterView" ];
+              "PharmacyView", "ProfilesView", "PrescriptionsView", "RegisterView" ];
 
 templateLoader.load(templates,
     function () {
