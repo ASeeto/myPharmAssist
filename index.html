@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myPharmAssist</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="description" content="">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="css/bootstrap.css"></link>
     <link rel="stylesheet" href="css/styles.css"></link>
     <link rel="stylesheet" href="css/bootstrap-colorpicker.min.css"></link>
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css"></link>
     <link rel="stylesheet" href="css/calendar.css"></link>
 
 </head>
@@ -20,7 +22,7 @@
 
 <div class="container">
     <div class="row">
-        <div id="content" class="span12>"></div>
+        <div id="content" class="col-md-12"></div>
     </div>
 
 </div>
@@ -32,9 +34,12 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places,visualization&types=places"></script>
 <script src="js/googlemap.js"></script>
+<script src="js/moment.js"></script>
 <script src="js/bootstrap-colorpicker.min.js"></script>
+<script src="js/bootstrap-datetimepicker.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/models/pharmacymodel.js"></script>
 <script src="js/models/profilemodel.js"></script>
 <script src="js/models/prescriptionmodel.js"></script>
 <script src="js/views/calendar.js"></script>

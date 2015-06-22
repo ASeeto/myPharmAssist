@@ -9,6 +9,7 @@ window.ProfilesView = Backbone.View.extend({
 
     initialize:function () {
         console.log('Initializing Profiles View');
+        $('.modal-backdrop').remove();
         this.profiles = new ProfileCollection();
         this.profilesView = new ProfileDivsView({model: this.profiles, className: 'profiles'});
     },

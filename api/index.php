@@ -11,6 +11,12 @@ $app->post('/logout', 'logout');
 $app->post('/register', 'register');
 $app->get('/session', authorize('user'));
 
+/** Pharmacies */
+$app->get('/getPharmacy', authorize('user'), 'getPharmacy');
+$app->post('/insertPharmacy', authorize('user'), 'insertPharmacy');
+$app->post('/deletePharmacy', authorize('user'), 'deletePharmacy');
+$app->post('/updatePharmacy', authorize('user'), 'updatePharmacy');
+
 /** Profiles */
 $app->get('/profiles', authorize('user'), 'getProfiles');
 $app->get('/profiles/:id', authorize('user'), 'getProfile');
@@ -25,7 +31,17 @@ $app->post('/insertPrescription', authorize('user'), 'insertPrescription');
 $app->post('/deletePrescription', authorize('user'), 'deletePrescription');
 $app->post('/updatePrescription', authorize('user'), 'updatePrescription');
 
+/** Calendar Events */
+$app->get('/getEvents', authorize('user'), 'getEvents');
+$app->post('/insertEvent', authorize('user'), 'insertEvent');
+// $app->post('/deletePharmacy', authorize('user'), 'deletePharmacy');
+// $app->post('/updatePharmacy', authorize('user'), 'updatePharmacy');
+
 $app->run();
+
+//======================================================================
+//                           SIGN-IN FUNCTIONS
+//======================================================================
 
 /**
  * Verify a user/password pair exists and sign in
@@ -155,6 +171,10 @@ function register() {
     }
 }
 
+//======================================================================
+//                          HELPER FUNCTIONS
+//======================================================================
+
 /**
  * Authorise function, used as Slim Route Middleware
  */
@@ -183,6 +203,17 @@ function authorize($role = "user") {
     };
 }
 
+function validateInputs($array){
+    /** Loop over field names, make sure each one exists and is not empty */
+    $error = false;
+    foreach($array as $field) {
+        if (empty($_POST[$field])) {
+            $error = true;
+        }
+    }
+    return $error;
+}
+
 function getSessionId() {
     /** Get current session email  */
     $email = $_SESSION['user']['email'];
@@ -195,8 +226,9 @@ function getSessionId() {
         $stmt = $db->prepare($sql);
         $stmt->bindParam("email", $email);
         $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['id'];
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $db = null;
+        return $user['id'];
 
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
@@ -205,12 +237,10 @@ function getSessionId() {
 
 function verifyUserProfile($id) {
     try {
-
         /** Connect to database */
         $db = getConnection();
         $user_id = getSessionId();
         $profile_id = $id;
-
         /** Use session ID to get profile */
         $sql = "SELECT * FROM userprofiles up 
                 WHERE up.user_id = :user_id 
@@ -220,7 +250,7 @@ function verifyUserProfile($id) {
         $stmt->bindParam("profile_id", $profile_id);
         $stmt->execute();
         $row = $stmt->rowCount();
-
+        $db = null;
         if($row){
             return true; 
         }
@@ -230,11 +260,140 @@ function verifyUserProfile($id) {
             // If a user is logged in, but doesn't have permissions, return 403
             $app->halt(403, 'You do not have the correct permissions to view this page.');
         }
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+//======================================================================
+//                              PHARMACIES
+//======================================================================
+
+/** Return a pharmacy for user */
+function getPharmacy(){
+    try {
+        $user_id = getSessionId();
+        $db = getConnection();
+        /** Use session ID to get pharmacy ID */
+        $sql = "SELECT * FROM pharmacies 
+                WHERE user_id = :pharmacy_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("pharmacy_id", $user_id);
+        $stmt->execute();
+        $pharmacy = $stmt->fetch(PDO::FETCH_ASSOC);
+        $db = null;
+
+        /** Include support for JSONP requests */
+        if (!isset($_GET['callback'])) {
+            echo json_encode($pharmacy);
+        } else {
+            echo $_GET['callback'] . '(' . json_encode($pharmacy) . ');';
+        }
 
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
+
+/** Insert new pharmacy and insert user pharmacy relation */
+function insertPharmacy() {
+    /** Required Inputs */
+    $required = array('company', 'address', 'website', 'company');
+    $error = validateInputs($required);
+    if(!$error) {
+        try {
+            /** Connect to database */
+            $db = getConnection();
+            /** Initialize variables for values taken from request */
+            $user_id = getSessionId();
+            $company = $_POST['company'];
+            $address = $_POST['address'];
+            $website = $_POST['website'];
+            $contact = $_POST['contact'];
+            /** Insert new pharmacy details */
+            $sql = "INSERT INTO pharmacies(user_id, company, address, website, contact) 
+                    VALUES(:user_id, :company, :address, :website, :contact)";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("user_id", $user_id);
+            $stmt->bindParam("company", $company);
+            $stmt->bindParam("address", $address);
+            $stmt->bindParam("website", $website);
+            $stmt->bindParam("contact", $contact);
+            $stmt->execute();
+            $db = null;
+            echo true;
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+    else {
+        echo '{"error":{"text":"Error inserting new pharmacy."}}';
+    }
+}
+
+function updatePharmacy() {
+    /** Required Inputs */
+    $required = array('company', 'address', 'website', 'company');
+    $error = validateInputs($required);
+    if(!$error) {
+        try {
+            /** Connect to database */
+            $db = getConnection();
+            /** Initialize variables for values taken from request */
+            $user_id = getSessionId();
+            $company = $_POST['company'];
+            $address = $_POST['address'];
+            $website = $_POST['website'];
+            $contact = $_POST['contact'];
+            /** Get IDs for update */
+            $user_id = getSessionId();
+            /** Use pharmacy ID to set pharmacy details */
+            $sql = "UPDATE pharmacies 
+                    SET company = :company, 
+                        address = :address,
+                        website = :website,
+                        contact = :contact
+                    WHERE user_id = :user_id;";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("company", $company);
+            $stmt->bindParam("address", $address);
+            $stmt->bindParam("website", $website);
+            $stmt->bindParam("contact", $contact);
+            $stmt->bindParam("user_id", $user_id);
+            $stmt->execute();
+            $db = null;
+            echo true;
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+    else {
+        echo '{"error":{"text":"All fields are required."}}';
+    }
+}
+
+function deletePharmacy() {
+    try {
+        $user_id = getSessionId();
+        /** Connect to database */
+        $db = getConnection();
+        /** Use pharmacy ID to delete pharmacy details */
+        $sql = "DELETE FROM pharmacies 
+                WHERE user_id = :user_id;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("user_id", $user_id);
+        $stmt->execute();
+        $stmt->execute();
+        $db = null;
+        echo true;
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+//======================================================================
+//                              PROFILES
+//======================================================================
 
 function getProfiles() {
     try {
@@ -252,6 +411,7 @@ function getProfiles() {
         $stmt->bindParam("user_id", $user_id);
         $stmt->execute();
         $profiles = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
 
         // Include support for JSONP requests
         if (!isset($_GET['callback'])) {
@@ -279,8 +439,8 @@ function getProfile($id) {
             $stmt = $db->prepare($sql);
             $stmt->bindParam("profile_id", $id);
             $stmt->execute();
-            $db = null;
             $profile = $stmt->fetchObject();
+            $db = null;
             /** Include support for JSONP requests */
             if (!isset($_GET['callback'])) {
                 echo json_encode($profile);
@@ -403,6 +563,10 @@ function updateProfile() {
     }
 }
 
+//======================================================================
+//                           PRESCRIPTIONS
+//======================================================================
+
 function getPrescriptions($profile_id) {
     /** Verify this profile belongs to this user */
     $verified = verifyUserProfile($profile_id);
@@ -421,6 +585,7 @@ function getPrescriptions($profile_id) {
             $stmt->bindParam("profile_id", $profile_id);
             $stmt->execute();
             $prescriptions = $stmt->fetchAll(PDO::FETCH_OBJ);
+            $db = null;
 
             // Include support for JSONP requests
             if (!isset($_GET['callback'])) {
@@ -451,7 +616,7 @@ function getPrescription($profile_id, $prescription_id) {
             $stmt->bindParam("prescription_id", $prescription_id);
             $stmt->execute();
             $prescription = $stmt->fetchAll(PDO::FETCH_OBJ);
-
+            $db = null;
             // Include support for JSONP requests
             if (!isset($_GET['callback'])) {
                 echo json_encode($prescription);
@@ -466,17 +631,9 @@ function getPrescription($profile_id, $prescription_id) {
 }
 
 function insertPrescription() {
-
     /** Required Field Names */
     $required = array('profile_id', 'medication', 'strength', 'quantity', 'route', 'frequency', 'dispense', 'refills');
-    /** Loop over field names, make sure each one exists and is not empty */
-    $error = false;
-    foreach($required as $field) {
-        if (empty($_POST[$field])) {
-            $error = true;
-        }
-    }
-
+    $error = validateInputs($required);
     if(!$error) {
         /** Initialize variables for values taken from request */
         $profile_id = $_POST['profile_id'];
@@ -529,7 +686,6 @@ function insertPrescription() {
 function deletePrescription() {
     $prescription_id = $_POST['id'];
     $profile_id = $_POST['profile_id'];
-
     /** Verify this profile belongs to this user */
     $verified = verifyUserProfile($profile_id);
     if($verified){
@@ -558,19 +714,10 @@ function deletePrescription() {
 }
 
 function updatePrescription() {
-
     /** Required Field Names */
     $required = array('profile_id', 'prescription_id', 'medication', 'strength', 'quantity', 'route', 'frequency', 'dispense', 'refills');
-    /** Loop over field names, make sure each one exists and is not empty */
-    $error = false;
-    foreach($required as $field) {
-        if (empty($_POST[$field])) {
-            $error = true;
-        }
-    }
-
+    $error = validateInputs($required);
     if(!$error) {
-
         /** Initialize variables for values taken from request */
         $profile_id      = $_POST['profile_id'];
         $prescription_id = $_POST['prescription_id'];
@@ -593,7 +740,6 @@ function updatePrescription() {
                         dispense   = :dispense, 
                         refills    = :refills
                     WHERE id = :prescription_id;";
-
             $stmt = $db->prepare($sql);
             $stmt->bindParam("medication"         , $medication);
             $stmt->bindParam("strength"           , $strength);
@@ -614,6 +760,96 @@ function updatePrescription() {
         echo '{"error":{"text":"All fields are required."}}';
     }
 }
+
+//======================================================================
+//                            CALENDAR EVENTS
+//======================================================================
+
+function getEvents() {
+    /** Retrieve parameters for Current View */
+    $app     = Slim::getInstance();
+    $request = $app->request();
+    $from    = $request->get('from');
+    $to      = $request->get('to');
+    $start = date('Y-m-d', $from / 1000);
+    $end   = date('Y-m-d', $to   / 1000);
+    try {
+        /** Connect to database */
+        $db = getConnection();
+        $user_id = getSessionId();
+        /** Use session ID to get events */
+        $sql = "SELECT * FROM events
+                WHERE user_id = :user_id
+                AND start BETWEEN :start AND :end;";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam("user_id", $user_id);
+        $stmt->bindParam("start", $start);
+        $stmt->bindParam("end", $end);
+        $stmt->execute();
+        $events = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $out = array();
+        foreach($events as $row) {
+            $out[] = array(
+                'id' => $row->id,
+                'title' => $row->title,
+                'class' => $row->class,
+                'url' => $row->url,
+                'start' => strtotime($row->start) . '000',
+                'end' => strtotime($row->end) .'000'
+            );
+        }
+        $db = null;
+        // Include support for JSONP requests
+        if (!isset($_GET['callback'])) {
+            echo json_encode(array('success' => 1, 'result' => $out));
+        } else {
+            echo $_GET['callback'] . '(' . json_encode(array('success' => 1, 'result' => $out)) . ');';
+        }
+    } catch(PDOException $e) {
+        echo '{"error":{"text":'. $e->getMessage() .'}}';
+    }
+}
+
+function insertEvent() {
+    /** Required Field Names */
+    $required = array('title', 'url', 'type', 'start', 'end');
+    $error = validateInputs($required);
+    if(!$error) {
+        try {
+            /** Initialize variables for values taken from request */
+            $title  = $_POST['title'];
+            $url    = $_POST['url'];
+            $class  = $_POST['type'];
+            $start  = date('Y-m-d H:i:s', strtotime($_POST['start']));
+            $end    = date('Y-m-d H:i:s', strtotime($_POST['end']));
+            /** Connect to database */
+            $db = getConnection();
+            $user_id = getSessionId();
+            /** Use session ID to get events */
+            $sql = "INSERT INTO events(user_id, title, url, class, start, end)
+                    VALUES (:user_id, :title, :url, :class, :start, :end);";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam("user_id", $user_id);
+            $stmt->bindParam("title"  , $title);
+            $stmt->bindParam("url"    , $url);
+            $stmt->bindParam("class"  , $class);
+            $stmt->bindParam("start"  , $start);
+            $stmt->bindParam("end"    , $end);
+            $stmt->execute();
+            $db = null;
+            echo true;
+        } catch(PDOException $e) {
+            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        }
+    }
+    else {
+        echo '{"error":{"text":"All fields are required."}}';
+    }
+}
+
+//======================================================================
+//                         DATABASE CONNECTION
+//======================================================================
 
 function getConnection() {
     $dbhost="localhost";

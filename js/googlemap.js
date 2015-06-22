@@ -1,6 +1,3 @@
-/** Default location is Boston, MA */
-var loc = new google.maps.LatLng(42.3601, -71.0589);
-
 /** Variables to be set by search helper functions */
 var map;
 var service;
@@ -122,17 +119,20 @@ function createMarker(place) {
             /** Set HTML string for infowindow content */
             html =  '<table class="details col-md-12">' +
                         '<tbody>' +
-                            '<tr><td><b>Company:</b></td><td>' + company + '</td></tr>' +
-                            '<tr><td><b>Address:</b></td><td>' + address + '</td></tr>' +
-                            '<tr><td><b>Website:</b></td><td>' + website + '</td></tr>' +
-                            '<tr><td><b>Contact:</b></td><td>' + contact + '</td></tr>' +
+                            '<tr><td><b>Company:</b></td><td><span id="company">' + company + '</span></td></tr>' +
+                            '<tr><td><b>Address:</b></td><td><span id="address">' + address + '</span></td></tr>' +
+                            '<tr><td><b>Website:</b></td><td><span id="website">' + website + '</span></td></tr>' +
+                            '<tr><td><b>Contact:</b></td><td><span id="contact">' + contact + '</span></td></tr>' +
                         '</tbody>' +
                     '</table>';
 
             /** Update infowindow content */
             infowindow.setContent(html);
-            $('.pharmacy.col-md-3').html('<h2>Details</h2>'+html);
-
+            $('#pharmacyDetails').html(
+                    '<h2>Details</h2><p> &nbsp; </p>' + html +
+                    '<p> &nbsp; </p>' +
+                    '<button id="savePharmacy" class="btn btn-success">Save as My Pharmacy</button>'
+            );
         });
 
         /** Open marker's infowindow */

@@ -11,6 +11,7 @@ window.PrescriptionsView = Backbone.View.extend({
         console.log('Initializing Prescriptions View');
         this.profile = new ProfileDivView({model: this.model}).render().el;
         this.prescriptions = new PrescriptionCollection();
+        this.prescriptions.getPrescriptions(this.model.toJSON().id, this);
         this.prescriptionsView = new PrescriptionsDivsView({model: this.prescriptions, className: 'prescriptions'});
     },
 
@@ -18,12 +19,10 @@ window.PrescriptionsView = Backbone.View.extend({
         $(this.el).html(this.template());
         /** Append this model */
         $('#profiledetail', this.el).append(this.profile);
-        /** Retrieve prescriptions to display from database */
-        this.prescriptions.getPrescriptions(this.model.toJSON().id);
         /** Append rendered prescriptions to template */
         $('#prescriptions', this.el).append(this.prescriptionsView.render().el);
-
         /** Execute function after render completes */
+        var that = this;
         setTimeout(function() {
             /** Requires form to have been rendered. */
             $('.pick-color').colorpicker({align:'left'});
@@ -40,6 +39,32 @@ window.PrescriptionsView = Backbone.View.extend({
         "click .deletePrescription": "deletePrescription",
         "click .updatePrescription": "updatePrescription",
         "hidden.bs.modal .modal": "resetForms"
+    },
+
+    /** Refresh prescriptions by resetting Collection data and retrieving prescriptions from database */
+    refresh: function() {
+        $('#defaultPrescriptions').hide();
+        this.prescriptions.getPrescriptions(this.model.toJSON().id, this);
+    },
+
+    /** Reset form inputs to defaults */
+    resetForms: function() {
+        $(this.el).find('form')[0].reset();
+        $('.modal-content .alert-error').hide();
+    },
+    redirect: function() {
+        window.location.replace(BASEURL+PROJECT+'/#profiles');
+    },
+
+    refreshProfile: function() {
+        var profile = new Profile({id: this.model.toJSON().id});
+        profile.fetch({
+            success: function (data) {
+                this.profile = new ProfileDivView({model: data}).render().el;
+                $('#profiledetail', this.el).children().remove();
+                $('#profiledetail', this.el).append(this.profile);
+            }
+        });
     },
 
     /** Open modal to allow for prescription creation */
@@ -196,6 +221,7 @@ window.PrescriptionsView = Backbone.View.extend({
                         $('.alert-error').text(data.error.text).show();
                     }else{
                         that.refresh();
+                        console.log(that.prescriptions);
                         $('.delete-prescription').modal('hide');
                         $('.popup-alert.alert-success').text('Deleted prescription succesfully.').show();
                         $('.popup-alert.alert-success').fadeOut(1600, "linear");
@@ -254,17 +280,6 @@ window.PrescriptionsView = Backbone.View.extend({
         });
     },
 
-    /** Refresh prescriptions by resetting Collection data and retrieving prescriptions from database */
-    refresh: function() {
-        this.prescriptions.getPrescriptions(this.model.toJSON().id);
-    },
-
-    /** Reset form inputs to defaults */
-    resetForms: function() {
-        $(this.el).find('form')[0].reset();
-        $('.modal-content .alert-error').hide();
-    },
-
     /** Open modal to allow for profile deletion */
     deleteProfile: function(event) {
         $('.popup-alert.alert-error').hide();
@@ -291,8 +306,8 @@ window.PrescriptionsView = Backbone.View.extend({
                         /** If error is returned from server, display message */
                         $('.popup-alert.alert-error').text(data.error.text).show();
                     }else{
-                        console.log('Deleted profile succesfully.');
                         $('.delete-profile').modal('hide');
+                        console.log('Deleted profile succesfully.');
                         that.redirect();
                     }
                 },
@@ -368,21 +383,6 @@ window.PrescriptionsView = Backbone.View.extend({
         $('#cancel_update_profile').off("click").on("click", function(event){
             event.preventDefault();
             $('.update-profile').modal('hide');
-        });
-    },
-
-    redirect: function() {
-        window.location.replace(BASEURL+PROJECT+'/#profiles');
-    },
-
-    refreshProfile: function() {
-        var profile = new Profile({id: this.model.toJSON().id});
-        profile.fetch({
-            success: function (data) {
-                this.profile = new ProfileDivView({model: data}).render().el;
-                $('#profiledetail', this.el).children().remove();
-                $('#profiledetail', this.el).append(this.profile);
-            }
         });
     }
 

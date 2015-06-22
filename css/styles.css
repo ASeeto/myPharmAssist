@@ -107,6 +107,27 @@ body {
   font-family: 'Glyphicons Halflings';
 }
 
+#calendarOptions {
+  position: absolute; 
+  display: none;
+  border: 1px #000 solid;
+  background-color: #eeeeee;
+  z-index: 1;
+  text-align: center;
+  box-sizing: border-box;
+  padding:10px;
+  border-radius: 0 25px 25px 25px;
+}
+
+#calendarOptions ul {
+  list-style: none;
+  padding: 0;
+}
+
+#calendarOptions ul li .btn {
+  width:100%;
+}
+
 @media (min-width: 768px) {
   .insert-prescription label {
     padding: 0;
