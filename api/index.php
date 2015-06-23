@@ -2,9 +2,9 @@
 
 session_start();
 
-require 'Slim/Slim.php';
+require 'vendor/autoload.php';
 
-$app = new Slim();
+$app = new \Slim\Slim();
 
 $app->post('/login', 'login');
 $app->post('/logout', 'logout');
@@ -34,8 +34,6 @@ $app->post('/updatePrescription', authorize('user'), 'updatePrescription');
 /** Calendar Events */
 $app->get('/getEvents', authorize('user'), 'getEvents');
 $app->post('/insertEvent', authorize('user'), 'insertEvent');
-// $app->post('/deletePharmacy', authorize('user'), 'deletePharmacy');
-// $app->post('/updatePharmacy', authorize('user'), 'updatePharmacy');
 
 $app->run();
 

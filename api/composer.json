@@ -1,0 +1,18 @@
+{
+    "name": "myPharmAssist",
+    "type": "application",
+    "description": "Pharmacist Prescription Tool",
+    "keywords": ["myPharmAssist"],
+    "homepage": "https://alexseeto.com/projects/myPharmAssist",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Seeto",
+            "email": "seeto.alexander@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "slim/slim": "2.*"
+    }
+}
