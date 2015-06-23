@@ -1,6 +1,22 @@
 # myPharmAssist
 myPharmAssist is an open source web project purposed for easing communication between pharmacists and patients. The application provides a platform for creating and storing profiles where users can then record individual prescription data for themselves and their family members. An interactive calendar is also provided in order for users to create reminder events that can detail information such as which prescriptions should be taken on which days as well as dates and deadlines for refilling prescriptions. Please feel free to contribute by reporting issues and/or submitting pull requests.
 
+## Initial Set-up
+Download the repo  
+```
+git clone https://github.com/ASeeto/myPharmAssist.git
+```
+
+Install dependencies using Composer  
+```
+cd myPharmAssist/api && php composer.phar install && php composer.phar update
+```
+
+Create a database and import or execute ```api/tables.sql```  
+```
+mysql directory -uroot < tables.sql 
+```
+
 ##User Guide
 ###Pharmacy  
 Start by entering a local address to discover pharmacies nearby. Markers will populate on the provided map. By selecting a marker and clicking "Save as my Pharmacy" in the Details panel, you will have successfully stored your local pharmacy for your user account.
