@@ -12,7 +12,7 @@ window.PrescriptionsView = Backbone.View.extend({
         this.profile = new ProfileDivView({model: this.model}).render().el;
         this.prescriptions = new PrescriptionCollection();
         this.prescriptions.getPrescriptions(this.model.toJSON().id, this);
-        this.prescriptionsView = new PrescriptionsDivsView({model: this.prescriptions, className: 'prescriptions'});
+        this.prescriptionsView = new PrescriptionsDivsView({model: this.prescriptions});
     },
 
     render:function () {
