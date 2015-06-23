@@ -1,7 +1,7 @@
-window.ContactView = Backbone.View.extend({
+window.AboutView = Backbone.View.extend({
 
     initialize:function () {
-        console.log('Initializing Contact View');
+        console.log('Initializing About View');
     },
 
     render:function () {

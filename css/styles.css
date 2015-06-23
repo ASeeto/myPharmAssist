@@ -20,6 +20,10 @@ body {
   width:100%;
 }
 
+.progress {
+  height:10px;
+}
+
 .pharmacy {
   box-sizing: border-box;
   padding: 30px;

@@ -72,6 +72,7 @@ window.PharmacyView = Backbone.View.extend({
                         '<p> &nbsp; </p>' +
                         '<button id="savePharmacy" class="btn btn-success">Save as My Pharmacy</button>'
                     );
+                    autosuggest();
                 }else{
                     /** Default location is Boston, MA */
                     var loc = new google.maps.LatLng(42.3601, -71.0589);

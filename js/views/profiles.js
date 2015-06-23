@@ -41,6 +41,13 @@ window.ProfilesView = Backbone.View.extend({
     /** Reset form inputs to defaults */
     resetForms: function() {
         $(this.el).find('form')[0].reset();
+        /** Triggering events that occur when users type so colorpicker is accurate... */
+        $('#insertColor').keydown();
+        $('#insertColor').keypress();
+        $('#insertColor').keyup();
+        $('#insertColor').blur();
+        $('#insertColor').focus();
+        $('#insertColor').change();
     },
 
     /** Retrieve details page for the profile that was clicked */

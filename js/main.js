@@ -32,7 +32,7 @@ window.Router = Backbone.Router.extend({
         "profiles": "profiles",
         "profiles/:id": "prescriptions",
         "calendar": "calendar",
-        "contact": "contact",
+        "about": "about",
         "register":"register"
     },
 
@@ -163,18 +163,18 @@ window.Router = Backbone.Router.extend({
         });
     },
 
-    contact: function () {
-        if (!this.contactView) {
-            this.contactView = new ContactView();
-            this.contactView.render();
+    about: function () {
+        if (!this.aboutView) {
+            this.aboutView = new AboutView();
+            this.aboutView.render();
         }
-        $('#content').html(this.contactView.el);
-        this.headerView.select('contact-menu');
+        $('#content').html(this.aboutView.el);
+        this.headerView.select('about-menu');
     }
 
 });
 
-templates = [ "CalendarView", "ContactView", "HeaderView", "HomeView", "LoginView", 
+templates = [ "AboutView", "CalendarView", "HeaderView", "HomeView", "LoginView", 
               "PharmacyView", "ProfilesView", "PrescriptionsView", "RegisterView" ];
 
 templateLoader.load(templates,

@@ -41,7 +41,8 @@ window.CalendarView = Backbone.View.extend({
         "click #insertEvent": "insertEvent",
         "click .calendar-nav": "calendarNav",
         "click .calendar-view": "calendarView",
-        "dp.change .date": "adjustDateMinMax"
+        "dp.change #datetime-start": "adjustEndDatetime",
+        "dp.change #datetime-end": "adjustStartDatetime"
         // "contextmenu .cal-cell": "showOptions",
         // "click": "hideOptions",
     },
@@ -51,8 +52,11 @@ window.CalendarView = Backbone.View.extend({
         calendar.view();
     },
 
-    adjustDateMinMax: function(event){
+    adjustEndDatetime: function(event){
         $('#datetime-end').data("DateTimePicker").minDate(event.date);
+    },
+
+    adjustStartDatetime: function(event){
         $('#datetime-start').data("DateTimePicker").maxDate(event.date);
     },
     
