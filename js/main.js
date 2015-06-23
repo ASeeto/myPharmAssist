@@ -1,15 +1,8 @@
-/**
- *  DEFAULT variables for my personal directory hierarchy
- */
-var BASEURL = '/projects/';
-var PROJECT = 'myPharmAssist';
-var SLIMLOC = BASEURL+PROJECT+'/api';
-
 // Tell jQuery to watch for any 401 or 403 errors and handle them appropriately
 $.ajaxSetup({
     statusCode: {
         401: function(){
-            // Redirec the to the login page.
+            // Redirect to the login page.
             window.location.replace(BASEURL+PROJECT+'/#login');
          
         },
@@ -24,7 +17,7 @@ $.ajaxSetup({
 window.Router = Backbone.Router.extend({
 
     routes: {
-        "": "login",
+        // "": "login",
         "login": "login",
         "logout": "logout",
         "home": "home",

@@ -1,3 +1,10 @@
+/**
+ *  DEFAULT variables for my personal directory hierarchy
+ */
+var BASEURL = '/projects/';
+var PROJECT = 'myPharmAssist';
+var SLIMLOC = BASEURL+PROJECT+'/api';
+
 /** The Template Loader. Used to asynchronously load templates located in separate .html files */
 window.templateLoader = {
 

@@ -1,10 +1,3 @@
-/**
- *  DEFAULT variables for my personal directory hierarchy
- */
-var BASEURL = '/projects/';
-var PROJECT = 'myPharmAssist';
-var SLIMLOC = BASEURL+PROJECT+'/api';
-
 window.ProfileDivsView = Backbone.View.extend({
 
     tagName:'div',
