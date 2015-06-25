@@ -3,7 +3,6 @@
 session_start();
 
 require 'vendor/autoload.php';
-
 $app = new \Slim\Slim();
 
 $app->post('/login', 'login');
@@ -178,8 +177,7 @@ function register() {
  */
 function authorize($role = "user") {
     return function () use ( $role ) {
-        // Get the Slim framework object
-        $app = Slim::getInstance();
+        $app = \Slim\Slim::getInstance();
         // First, check to see if the user is logged in at all
         if(!empty($_SESSION['user'])) {
             // Next, validate the role to make sure they can access the route
@@ -254,7 +252,7 @@ function verifyUserProfile($id) {
         }
         /** Halt app and throw Error Code 403 */
         else{
-            $app = Slim::getInstance();
+            $app = \Slim\Slim::getInstance();
             // If a user is logged in, but doesn't have permissions, return 403
             $app->halt(403, 'You do not have the correct permissions to view this page.');
         }
@@ -765,7 +763,7 @@ function updatePrescription() {
 
 function getEvents() {
     /** Retrieve parameters for Current View */
-    $app     = Slim::getInstance();
+    $app = \Slim\Slim::getInstance();
     $request = $app->request();
     $from    = $request->get('from');
     $to      = $request->get('to');

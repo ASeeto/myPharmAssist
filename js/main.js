@@ -17,7 +17,7 @@ $.ajaxSetup({
 window.Router = Backbone.Router.extend({
 
     routes: {
-        // "": "login",
+        "": "login",
         "login": "login",
         "logout": "logout",
         "home": "home",
@@ -25,12 +25,19 @@ window.Router = Backbone.Router.extend({
         "profiles": "profiles",
         "profiles/:id": "prescriptions",
         "calendar": "calendar",
-        "about": "about",
-        "register":"register"
+        "about": "about"
+    },
+
+    header: function() {
+        this.headerView = new HeaderView();
+        $('.header').html(this.headerView.render().el);
+        $('body').css({'background-image':'none'});
     },
 
     login: function() {
-        $('#content').html(new LoginView().render().el);
+        if (this.headerView) { this.headerView.remove(); }
+        $('body').css({'background-image':'url(img/bg-signin.jpg)'});
+        $('#content').html(new LoginView({className:'signin col-md-6 col-md-offset-3'}).render().el);
     },
 
     logout: function() {
@@ -38,25 +45,21 @@ window.Router = Backbone.Router.extend({
         $('.nav li').removeClass('active');
         var page = 'login';
         var url = SLIMLOC+'/logout';
+        var el = this;
         console.log('Logging out... ');
         $.ajax({
             url:url,
             type:'POST',
             success:function () {
+                if (el.headerView) { el.headerView.remove(); }
+                $('body').css({'background-image':'url(img/bg-signin.jpg)'});
                 window.location.replace(BASEURL+PROJECT+'/#'+page);
                 $("#logout").hide();
             }
         });
     },
 
-    register: function() {
-        $('#content').html(new RegisterView().render().el);
-    },
-    
     initialize: function () {
-        this.headerView = new HeaderView();
-        $('.header').html(this.headerView.render().el);
-
         // Close the search dropdown on click anywhere in the UI
         $('body').click(function () {
             $('.dropdown').removeClass("open");
@@ -67,11 +70,13 @@ window.Router = Backbone.Router.extend({
         $('.nav li').removeClass('active');
         var page = 'home';
         var url = SLIMLOC+'/session';
+        var el = this;
         $.ajax({
             url:url,
             type:'GET',
             success:function () {
                 window.location.replace(BASEURL+PROJECT+'/#'+page);
+                el.header();
                 if (!this.homeView) {
                     this.homeView = new HomeView();
                     this.homeView.render();
@@ -82,15 +87,17 @@ window.Router = Backbone.Router.extend({
     },
 
     pharmacy: function () {
-        this.headerView.select('pharmacy-menu');
         var page = 'pharmacy';
         var url = SLIMLOC+'/session';
+        var el = this;
         $.ajax({
             url:url,
             type:'GET',
             success:function () {
                 window.location.replace(BASEURL+PROJECT+'/#'+page);
+                el.header();
                 if (!this.pharmacyView) {
+                    el.headerView.select('pharmacy-menu');
                     this.pharmacyView = new PharmacyView();
                     this.pharmacyView.render();
                 }
@@ -104,15 +111,17 @@ window.Router = Backbone.Router.extend({
     },
 
     profiles: function () {
-        this.headerView.select('prescription-menu');
         var page = 'profiles';
         var url = SLIMLOC+'/session';
+        var el = this;
         $.ajax({
             url:url,
             type:'GET',
             success:function (response) {
                 window.location.replace(BASEURL+PROJECT+'/#'+page);
+                el.header();
                 if (!this.profilesView) {
+                    el.headerView.select('profiles-menu');
                     this.profilesView = new ProfilesView();
                     this.profilesView.render();
                 }
@@ -127,23 +136,28 @@ window.Router = Backbone.Router.extend({
 
     prescriptions: function(id) {
         var profile = new Profile({id: id});
+        var el = this;
         profile.fetch({
             success: function (data) {
+                el.header();
+                el.headerView.select('profiles-menu');
                 $('#content').html(new PrescriptionsView({model: data}).render().el);
             }
         });
     },
 
     calendar: function () {
-        this.headerView.select('calendar-menu');
         var page = 'calendar';
         var url = SLIMLOC+'/session';
+        var el = this;
         $.ajax({
             url:url,
             type:'GET',
             success:function () {
                 window.location.replace(BASEURL+PROJECT+'/#'+page);
+                el.header();
                 if (!this.calendarView) {
+                    el.headerView.select('calendar-menu');
                     this.calendarView = new CalendarView();
                     this.calendarView.render();
                 }
@@ -157,18 +171,19 @@ window.Router = Backbone.Router.extend({
     },
 
     about: function () {
+        this.header();
+        this.headerView.select('about-menu');
         if (!this.aboutView) {
             this.aboutView = new AboutView();
             this.aboutView.render();
         }
         $('#content').html(this.aboutView.el);
-        this.headerView.select('about-menu');
     }
 
 });
 
 templates = [ "AboutView", "CalendarView", "HeaderView", "HomeView", "LoginView", 
-              "PharmacyView", "ProfilesView", "PrescriptionsView", "RegisterView" ];
+              "PharmacyView", "ProfilesView", "PrescriptionsView" ];
 
 templateLoader.load(templates,
     function () {

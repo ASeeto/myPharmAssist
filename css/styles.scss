@@ -1,0 +1,269 @@
+//colors
+$black: #000;
+$white: #fff;
+$light_gray: #eee;
+$dark_gray: #777;
+$very_dark_gray: #333;
+$googlemap_bg: #337ab7;
+$gray: #555;
+$color_quill_gray_approx: #d5d5d5;
+$color_pine_glade_approx: #b8d697;
+
+//fonts
+$font_0: Helvetica;
+$font_1: Glyphicons Halflings;
+
+body { 
+	background: url(../img/bg-signin.jpg) no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	padding-top: 60px;
+	font-family: $font_0;
+}
+.signin {
+	margin-top: 10%;
+	padding: 50px;
+	border-radius: 4px;
+	h1 {
+		text-align: center;
+		margin-bottom: 30px;
+		color: #fff;
+		font-weight: bolder;
+	}
+	.form-horizontal input {
+		width: 100%;
+		background-color: rgba(255,255,255,0.75);
+	}
+	.form-control::-webkit-input-placeholder { color: #000; }
+	.form-control:-moz-placeholder { color: #000; }
+	.form-control::-moz-placeholder { color: #000; }
+	.form-control:-ms-input-placeholder { color: #000; }
+}
+
+
+
+/* do not group these rules */
+*::-webkit-input-placeholder {
+    color: black !important;
+}
+*:-moz-placeholder {
+    /* FF 4-18 */
+    color: red;
+}
+*::-moz-placeholder {
+    /* FF 19+ */
+    color: red;
+}
+*:-ms-input-placeholder {
+    /* IE 10+ */
+    color: red;
+}
+
+.progress {
+	height: 10px;
+}
+.pharmacy {
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	padding: 30px;
+	border: 1px $black solid;
+	h1 {
+		font-size: 60px;
+		line-height: 1;
+		color: inherit;
+		letter-spacing: -1px;
+	}
+	p {
+		font-size: 18px;
+		font-weight: 200;
+		line-height: 27px;
+		color: inherit;
+	}
+	&.col-md-9 {
+		background-color: $googlemap_bg;
+	}
+	&.col-md-3 {
+		background-color: $light_gray;
+		height: 500px;
+		h2 {
+			margin: 0;
+		}
+	}
+	.details td {
+		padding: 5px;
+		vertical-align: top;
+	}
+}
+#map-canvas {
+	height: 440px;
+	margin: 0;
+	padding: 0;
+	//Instead of the line below you could use @includeborder-radius($radius, $vertical-radius)
+	border-radius: 5px;
+	border: 1px $black solid;
+}
+#logout {
+	display: none;
+}
+.modal-content {
+	padding: 30px;
+	h2 {
+		text-align: center;
+		margin-bottom: 30px;
+	}
+}
+.profile {
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	border: 5px solid $white;
+	padding: 30px;
+	text-align: center;
+	.profile-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	.profile-button {
+		display: none;
+		float: left;
+	}
+}
+.profiledetail {
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	border: 5px solid $white;
+	padding: 30px;
+	text-align: center;
+}
+#calendarOptions {
+	position: absolute;
+	display: none;
+	border: 1px $black solid;
+	background-color: $light_gray;
+	z-index: 1;
+	text-align: center;
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	padding: 10px;
+	//Instead of the line below you could use @includeborder-radius($radius, $vertical-radius)
+	border-radius: 0 25px 25px 25px;
+	ul {
+		list-style: none;
+		padding: 0;
+		li .btn {
+			width: 100%;
+		}
+	}
+}
+@media(min-width: 768px) {
+	.insert-prescription label {
+		padding: 0;
+	}
+}
+.navbar-default {
+	background-color: $black;
+	border-color: $white;
+	.navbar-brand {
+		color: $white;
+		&:hover {
+			color: $white;
+		}
+		&:focus {
+			color: $white;
+		}
+	}
+	.navbar-toggle {
+		border-color: $black;
+		&:hover {
+			background-color: $black;
+		}
+		&:focus {
+			background-color: $black;
+		}
+		.icon-bar {
+			background-color: $white;
+		}
+	}
+	.navbar-nav > {
+		li > a {
+			color: $white;
+			&:hover {
+				color: $white;
+			}
+			&:focus {
+				color: $white;
+			}
+		}
+		.active > a {
+			color: $white;
+			background-color: $black;
+			&:hover {
+				color: $white;
+				background-color: $black;
+			}
+			&:focus {
+				color: $white;
+				background-color: $black;
+			}
+		}
+		.open > a {
+			color: $gray;
+			background-color: $color_quill_gray_approx;
+			&:hover {
+				color: $gray;
+				background-color: $color_quill_gray_approx;
+				.caret {
+					border-top-color: $gray;
+					border-bottom-color: $gray;
+				}
+			}
+			&:focus {
+				color: $gray;
+				background-color: $color_quill_gray_approx;
+				.caret {
+					border-top-color: $gray;
+					border-bottom-color: $gray;
+				}
+			}
+			.caret {
+				border-top-color: $gray;
+				border-bottom-color: $gray;
+			}
+		}
+		.dropdown > a {
+			.caret {
+				border-top-color: $dark_gray;
+				border-bottom-color: $dark_gray;
+			}
+			&:hover .caret {
+				border-top-color: $very_dark_gray;
+				border-bottom-color: $very_dark_gray;
+			}
+			&:focus .caret {
+				border-top-color: $very_dark_gray;
+				border-bottom-color: $very_dark_gray;
+			}
+		}
+	}
+}
+
+.profiles .profile {
+	cursor: pointer;
+}
+#prescriptions .btn {
+	font-family: $font_1;
+}
+
+@media(max-width: 767px) {
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+		color: $dark_gray;
+		&:hover {
+			color: $very_dark_gray;
+		}
+		&:focus {
+			color: $very_dark_gray;
+		}
+	}
+}
