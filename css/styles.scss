@@ -41,26 +41,6 @@ body {
 	.form-control::-moz-placeholder { color: #000; }
 	.form-control:-ms-input-placeholder { color: #000; }
 }
-
-
-
-/* do not group these rules */
-*::-webkit-input-placeholder {
-    color: black !important;
-}
-*:-moz-placeholder {
-    /* FF 4-18 */
-    color: red;
-}
-*::-moz-placeholder {
-    /* FF 19+ */
-    color: red;
-}
-*:-ms-input-placeholder {
-    /* IE 10+ */
-    color: red;
-}
-
 .progress {
 	height: 10px;
 }
@@ -118,8 +98,10 @@ body {
 	//Instead of the line below you could use @includebox-sizing($bs)
 	box-sizing: border-box;
 	border: 5px solid $white;
-	padding: 30px;
 	text-align: center;
+	height: 100px;
+	cursor: pointer;
+	border-radius: 0 100px 100px 0;
 	.profile-buttons {
 		position: absolute;
 		top: 0;
@@ -128,6 +110,26 @@ body {
 	.profile-button {
 		display: none;
 		float: left;
+	}
+	.pic {
+		height: 90px;
+		width: 90px;
+		border-radius: 0% 50% 50% 0;
+		background-color: #fff;
+		float: left;
+		margin-left: -15px;
+		img {
+			height: 100%;
+			width: 100%;
+			border-radius: 50%;
+			border: 5px solid rgba(255,0,0,0);
+			float: left;
+		}
+	}
+	.text {
+		text-align: center;
+		margin: 35px 0 0 0;
+		width: 100%;
 	}
 }
 .profiledetail {
@@ -249,9 +251,6 @@ body {
 	}
 }
 
-.profiles .profile {
-	cursor: pointer;
-}
 #prescriptions .btn {
 	font-family: $font_1;
 }

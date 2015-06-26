@@ -398,7 +398,7 @@ function getProfiles() {
         $user_id = getSessionId();
         
         /** Use session ID to get profiles */
-        $sql = "SELECT p.id, p.name, p.color 
+        $sql = "SELECT *
                 FROM profiles p 
                 LEFT JOIN userprofiles up 
                 ON p.id = up.profile_id 
@@ -429,7 +429,7 @@ function getProfile($id) {
     if($verified){
         try {
             /** Get the user profile */
-            $sql = "SELECT p.id, p.name, p.color 
+            $sql = "SELECT *
                     FROM profiles p 
                     WHERE p.id = :profile_id;";
             $stmt = $db->prepare($sql);
@@ -450,21 +450,24 @@ function getProfile($id) {
 }
 
 function insertProfile() {
-    if(!empty($_POST['name']) && !empty($_POST['color'])) {
-    
+    /** Required Field Names */
+    $required = array('name', 'color', 'gender');
+    $error = validateInputs($required);
+    if(!$error) {
         /** Initialize variables for values taken from request */
         $user_id = getSessionId();
         $name = $_POST['name'];
         $color = $_POST['color'];
-
+        $gender = $_POST['gender'];
         try {
             /** Create the new profile */
             $db = getConnection();
-            $sql = "INSERT INTO profiles(name,color) 
-                    VALUES(:name, :color);";
+            $sql = "INSERT INTO profiles(name,color,gender) 
+                    VALUES(:name, :color, :gender);";
             $stmt = $db->prepare($sql);
             $stmt->bindParam("name", $name);
             $stmt->bindParam("color", $color);
+            $stmt->bindParam("gender", $gender);
             $stmt->execute();
 
             /** Get last insert ID, the profile just created from THIS connection */
@@ -495,7 +498,6 @@ function deleteProfile() {
     /** Initialize variables for values taken from request */
     $user_id = getSessionId();
     $profile_id = $_POST['id'];
-
     try {
         /** Create the new profile */
         $db = getConnection();
@@ -524,11 +526,15 @@ function deleteProfile() {
 }
 
 function updateProfile() {
-    if(!empty($_POST['name']) && !empty($_POST['color'])) {
+    /** Required Field Names */
+    $required = array('name', 'color', 'gender');
+    $error = validateInputs($required);
+    if(!$error) {
         /** Initialize variables for values taken from request */
         $profile_id = $_POST['id'];
         $name = $_POST['name'];
         $color = $_POST['color'];
+        $gender = $_POST['gender'];
         /** Verify this profile belongs to this user */
         $verified = verifyUserProfile($profile_id);
         if($verified){
@@ -537,11 +543,12 @@ function updateProfile() {
                 /** Create the new profile */
                 $db = getConnection();
                 $sql = "UPDATE profiles 
-                        SET name = :name, color = :color 
+                        SET name = :name, color = :color, gender = :gender
                         WHERE id = :profile_id;";
                 $stmt = $db->prepare($sql);
                 $stmt->bindParam("name", $name);
                 $stmt->bindParam("color", $color);
+                $stmt->bindParam("gender", $gender);
                 $stmt->bindParam("profile_id", $profile_id);
                 $stmt->execute();
 
@@ -555,7 +562,7 @@ function updateProfile() {
         }
     }
     else {
-        echo '{"error":{"text":"A name and color is required."}}';
+        echo '{"error":{"text":"All fields are required."}}';
     }
 }
 

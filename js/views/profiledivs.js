@@ -39,6 +39,17 @@ window.ProfileDivView = Backbone.View.extend({
 
     render:function () {
 
+        /** Default Pictures */
+        m = 'img/default-male.png';
+        f = 'img/default-female.png';
+
+        /** Get profile details from model */
+        var profile = this.model.toJSON();
+        id     = profile.id;
+        img    = profile.img ? profile.img : (profile.gender == 'm' ? m : f);
+        name   = profile.name;
+        color  = profile.color;
+
         /** Create buttons for Profile Div */
         var buttons = $('<div class="profile-buttons"></div>')
         var delete_button = $('<button type="button" class="delete-btn btn profile-button btn-danger" ' + 
@@ -48,16 +59,20 @@ window.ProfileDivView = Backbone.View.extend({
         $(buttons).append(delete_button);
         $(buttons).append(update_button);
 
-        /** Create Profile Div */
-        var profile = this.model.toJSON();
-        $(this.el).attr('id', profile.id);
-        $(this.el).html(profile.name);
-        $(this.el).css({'background-color':profile.color});
+        /** Create content for Profile Div */
+        var image = $('<div class="pic"><img src="'+img+'"></div>');
+        var text = $('<div class="text">'+name+'</div>');
 
-        /** Append buttons */
+        /** Get profile details from model */
+
+        /** Append all */
         $(this.el).append(buttons);
+        $(this.el).append(image);
+        $(this.el).append(text);
 
         /** Return Profile */
+        $(this.el).attr('id', id);
+        $(this.el).css({'background-color':profile.color});
         return this;
 
     },

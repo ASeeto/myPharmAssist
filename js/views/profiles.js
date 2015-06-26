@@ -63,7 +63,8 @@ window.ProfilesView = Backbone.View.extend({
         var url = SLIMLOC+'/insertProfile';
         var formValues = {
             name: $('#insertName').val(),
-            color: $('#insertColor').val()
+            color: $('#insertColor').val(),
+            gender: $('#insertGender').val()
         };
         $.ajax({
             url:url,
