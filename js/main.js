@@ -43,10 +43,10 @@ window.Router = Backbone.Router.extend({
     switchcsstext: function(){
         style = $('#current_style').attr('href');
         if(style == 'css/dark.css'){
-            $('#switchcss a').text('Light Side');
+            $('#switchcss a').text('Switch to Light Side');
         }
         else{
-            $('#switchcss a').text('Dark Side');
+            $('#switchcss a').text('Switch to Dark Side');
         }
     },
 

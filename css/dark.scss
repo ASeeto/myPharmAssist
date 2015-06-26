@@ -248,6 +248,7 @@ body {
 		}
 		.active > a {
 			color: $white;
+			border-bottom: 3px solid #fff; 
     		background-color: transparent;
 			&:hover {
 				color: $white;

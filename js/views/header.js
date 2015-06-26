@@ -24,13 +24,13 @@ window.HeaderView = Backbone.View.extend({
     togglecss: function(){
         event.preventDefault();
         text = $('#switchcss').text();
-        if(text == 'Light Side'){
+        if(text == 'Switch to Light Side'){
             $('#current_style').attr('href','css/light.css');
-            $('#switchcss a').text('Dark Side');
+            $('#switchcss a').text('Switch to Dark Side');
         }
         else{
             $('#current_style').attr('href','css/dark.css');
-            $('#switchcss a').text('Light Side');
+            $('#switchcss a').text('Switch to Light Side');
         }
     },
 
