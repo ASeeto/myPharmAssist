@@ -1,0 +1,281 @@
+html {
+  height: 100%; }
+
+body {
+  background: url(../img/bg-signin.jpg) no-repeat center center fixed;
+  background-color: #515159;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: Helvetica;
+  height: 100%;
+  color: #fff; }
+
+.calendar {
+  color: #000;
+  background-color: #fff; }
+
+.paddingtop {
+  padding-top: 60px; }
+
+.signin {
+  margin-top: 10%;
+  padding: 50px;
+  border-radius: 4px; }
+  .signin h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+    font-weight: bolder; }
+  .signin .form-horizontal input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.75); }
+  .signin .form-control::-webkit-input-placeholder {
+    color: #000; }
+  .signin .form-control:-moz-placeholder {
+    color: #000; }
+  .signin .form-control::-moz-placeholder {
+    color: #000; }
+  .signin .form-control:-ms-input-placeholder {
+    color: #000; }
+
+#switchcss {
+  cursor: pointer; }
+
+.jumbotron {
+  background-color: #515159;
+  text-align: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-left: 1px solid rgba(0, 0, 0, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.3); }
+
+.progress {
+  height: 10px; }
+
+.pharmacy {
+  box-sizing: border-box;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+  .pharmacy h1 {
+    font-size: 60px;
+    line-height: 1;
+    color: inherit;
+    letter-spacing: -1px; }
+  .pharmacy p {
+    font-size: 18px;
+    font-weight: 200;
+    line-height: 27px;
+    color: inherit; }
+  .pharmacy.col-md-9 {
+    border-left: 1px solid rgba(0, 0, 0, 0.5); }
+    .pharmacy.col-md-9 #map-canvas {
+      height: 440px;
+      margin: 0;
+      padding: 0;
+      border-radius: 5px;
+      border: 1px #000 solid; }
+      .pharmacy.col-md-9 #map-canvas .details {
+        color: #000; }
+        .pharmacy.col-md-9 #map-canvas .details td {
+          padding: 5px;
+          vertical-align: top; }
+  .pharmacy.col-md-3 {
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    height: 502px;
+    color: #fff; }
+    .pharmacy.col-md-3 .details td {
+      padding: 5px;
+      vertical-align: top; }
+    .pharmacy.col-md-3 h2 {
+      margin: 30px 0 0 0; }
+
+#logout {
+  display: none; }
+
+.modal-content {
+  padding: 30px;
+  background-color: #515159; }
+  .modal-content h2 {
+    text-align: center;
+    margin-bottom: 30px; }
+
+.profile {
+  box-sizing: border-box;
+  border: 5px solid #515159;
+  text-align: center;
+  height: 100px;
+  cursor: pointer;
+  border-radius: 0 100px 100px 0; }
+  .profile .profile-buttons {
+    position: absolute;
+    top: 0;
+    right: 0; }
+  .profile .profile-button {
+    display: none;
+    float: left; }
+  .profile .pic {
+    height: 90px;
+    width: 90px;
+    border-radius: 0% 50% 50% 0;
+    background-color: #515159;
+    float: left;
+    margin-left: -15px; }
+    .profile .pic img {
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+      border: 5px solid #515159;
+      float: left; }
+  .profile .text {
+    text-align: center;
+    margin: 35px 0 0 0;
+    width: 100%; }
+
+.profiledetail {
+  box-sizing: border-box;
+  border: 5px solid #fff;
+  padding: 30px;
+  text-align: center; }
+
+#calendarOptions {
+  position: absolute;
+  display: none;
+  border: 1px #000 solid;
+  background-color: #eee;
+  z-index: 1;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 0 25px 25px 25px; }
+  #calendarOptions ul {
+    list-style: none;
+    padding: 0; }
+    #calendarOptions ul li .btn {
+      width: 100%; }
+
+@media (min-width: 768px) {
+  .insert-prescription label {
+    padding: 0; } }
+.navbar-default {
+  background-color: #515159;
+  background: -webkit-linear-gradient(#3f4045, #515159);
+  /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#3f4045, #515159);
+  /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#3f4045, #515159);
+  /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#3f4045, #515159);
+  /* Standard syntax */
+  border-color: #515159;
+  height: 53px; }
+  .navbar-default .navbar-brand {
+    color: #fff;
+    font-family: cursive; }
+    .navbar-default .navbar-brand:hover {
+      color: #fff; }
+    .navbar-default .navbar-brand:focus {
+      color: #fff; }
+  .navbar-default .navbar-toggle {
+    border-color: #000; }
+    .navbar-default .navbar-toggle:hover {
+      background-color: #3f4045; }
+    .navbar-default .navbar-toggle:focus {
+      background-color: #515159; }
+    .navbar-default .navbar-toggle .icon-bar {
+      background-color: #fff; }
+  .navbar-default .navbar-nav > li > a {
+    color: #fff; }
+    .navbar-default .navbar-nav > li > a:hover {
+      color: #fff;
+      border-bottom: 3px solid #fff; }
+    .navbar-default .navbar-nav > li > a:focus {
+      color: #fff;
+      border-bottom: 3px solid #fff; }
+  .navbar-default .navbar-nav > .active > a {
+    color: #fff;
+    background-color: transparent; }
+    .navbar-default .navbar-nav > .active > a:hover {
+      color: #fff;
+      background-color: transparent; }
+    .navbar-default .navbar-nav > .active > a:focus {
+      color: #fff;
+      background-color: transparent; }
+  .navbar-default .navbar-nav > .open > a {
+    color: #555;
+    background-color: #d5d5d5; }
+    .navbar-default .navbar-nav > .open > a:hover {
+      color: #555;
+      background-color: #d5d5d5; }
+      .navbar-default .navbar-nav > .open > a:hover .caret {
+        border-top-color: #555;
+        border-bottom-color: #555; }
+    .navbar-default .navbar-nav > .open > a:focus {
+      color: #555;
+      background-color: #d5d5d5; }
+      .navbar-default .navbar-nav > .open > a:focus .caret {
+        border-top-color: #555;
+        border-bottom-color: #555; }
+    .navbar-default .navbar-nav > .open > a .caret {
+      border-top-color: #555;
+      border-bottom-color: #555; }
+  .navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #777;
+    border-bottom-color: #777; }
+  .navbar-default .navbar-nav > .dropdown > a:hover .caret {
+    border-top-color: #333;
+    border-bottom-color: #333; }
+  .navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #333;
+    border-bottom-color: #333; }
+
+#prescriptions .btn {
+  font-family: Glyphicons Halflings; }
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #3f4045; }
+
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #515159; }
+
+@media (max-width: 767px) {
+  #navbar {
+    background-color: #515159;
+    background: -webkit-linear-gradient(#515159, #3f4045);
+    /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#515159, #3f4045);
+    /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#515159, #3f4045);
+    /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#515159, #3f4045);
+    /* Standard syntax */
+    border-color: #515159; }
+
+  .navbar-default .navbar-nav > li > a:hover {
+    border-bottom: none; }
+
+  .navbar-default .navbar-nav > li > a:focus {
+    border-bottom: none; }
+
+  .signin {
+    margin-top: 20px; }
+    .signin h1 {
+      margin-left: -35px; } }
+@media (max-width: 991px) {
+  .pharmacy {
+    border-top: none;
+    border-bottom: none; }
+    .pharmacy.col-md-9 {
+      border-top: 1px solid rgba(0, 0, 0, 0.5);
+      border-left: 1px solid rgba(0, 0, 0, 0.5);
+      border-right: 1px solid rgba(255, 255, 255, 0.3); }
+    .pharmacy.col-md-3 {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      border-left: 1px solid rgba(0, 0, 0, 0.5);
+      border-right: 1px solid rgba(255, 255, 255, 0.3);
+      height: auto; } }
+
+/*# sourceMappingURL=dark.css.map */

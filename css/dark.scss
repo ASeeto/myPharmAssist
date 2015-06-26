@@ -1,0 +1,348 @@
+//colors
+$background: #515159;
+$nav_border_bottom: 3px;
+$black: #000;
+$white: #fff;
+$light_gray: #eee;
+$dark_gray: #777;
+$very_dark_gray: #333;
+$gray: #555;
+$color_quill_gray_approx: #d5d5d5;
+$color_pine_glade_approx: #b8d697;
+
+//fonts
+$font_0: Helvetica;
+$font_1: Glyphicons Halflings;
+
+html {
+	height: 100%;
+}
+body { 
+	background: url(../img/bg-signin.jpg) no-repeat center center fixed; 
+	background-color: $background;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	font-family: $font_0;
+	height: 100%;
+	color: $white;
+}
+.calendar {
+	color: $black;
+	background-color: $white;
+}
+.paddingtop {
+	padding-top: 60px;
+}
+.signin {
+	margin-top: 10%;
+	padding: 50px;
+	border-radius: 4px;
+	h1 {
+		text-align: center;
+		margin-bottom: 30px;
+		color: #fff;
+		font-weight: bolder;
+	}
+	.form-horizontal input {
+		width: 100%;
+		background-color: rgba(255,255,255,0.75);
+	}
+	.form-control::-webkit-input-placeholder { color: #000; }
+	.form-control:-moz-placeholder { color: #000; }
+	.form-control::-moz-placeholder { color: #000; }
+	.form-control:-ms-input-placeholder { color: #000; }
+}
+
+#switchcss {
+	cursor:pointer;
+}
+
+.jumbotron {
+	background-color: $background;
+	text-align: center;
+	
+	border-top: 1px solid rgba(0,0,0,0.5);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+	border-left: 1px solid rgba(0,0,0,0.5);
+	border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+.progress {
+	height: 10px;
+}
+.pharmacy {
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	padding: 30px;
+	background-color: rgba(255,255,255,0.2);
+	border-top: 1px solid rgba(0,0,0,0.5);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+	h1 {
+		font-size: 60px;
+		line-height: 1;
+		color: inherit;
+		letter-spacing: -1px;
+	}
+	p {
+		font-size: 18px;
+		font-weight: 200;
+		line-height: 27px;
+		color: inherit;
+	}
+	&.col-md-9 {
+		border-left: 1px solid rgba(0,0,0,0.5);
+		#map-canvas {
+			height: 440px;
+			margin: 0;
+			padding: 0;
+			//Instead of the line below you could use @includeborder-radius($radius, $vertical-radius)
+			border-radius: 5px;
+			border: 1px $black solid;
+			.details {
+				color: #000;
+				td {
+					padding: 5px;
+					vertical-align: top;
+				}
+			}
+		}
+	}
+	&.col-md-3 {
+		border-right: 1px solid rgba(255, 255, 255, 0.3);
+		height: 502px;
+		color: #fff;
+		.details {
+			td {
+				padding: 5px;
+				vertical-align: top;
+			}
+		}
+		h2 {
+			margin: 30px 0 0 0;
+		}
+	}
+}
+#logout {
+	display: none;
+}
+.modal-content {
+	padding: 30px;
+	background-color: $background;
+	h2 {
+		text-align: center;
+		margin-bottom: 30px;
+	}
+}
+.profile {
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	border: 5px solid $background;
+	text-align: center;
+	height: 100px;
+	cursor: pointer;
+	border-radius: 0 100px 100px 0;
+	.profile-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+	.profile-button {
+		display: none;
+		float: left;
+	}
+	.pic {
+		height: 90px;
+		width: 90px;
+		border-radius: 0% 50% 50% 0;
+		background-color: $background;
+		float: left;
+		margin-left: -15px;
+		img {
+			height: 100%;
+			width: 100%;
+			border-radius: 50%;
+			border: 5px solid $background;
+			float: left;
+		}
+	}
+	.text {
+		text-align: center;
+		margin: 35px 0 0 0;
+		width: 100%;
+	}
+}
+.profiledetail {
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	border: 5px solid $white;
+	padding: 30px;
+	text-align: center;
+}
+#calendarOptions {
+	position: absolute;
+	display: none;
+	border: 1px $black solid;
+	background-color: $light_gray;
+	z-index: 1;
+	text-align: center;
+	//Instead of the line below you could use @includebox-sizing($bs)
+	box-sizing: border-box;
+	padding: 10px;
+	//Instead of the line below you could use @includeborder-radius($radius, $vertical-radius)
+	border-radius: 0 25px 25px 25px;
+	ul {
+		list-style: none;
+		padding: 0;
+		li .btn {
+			width: 100%;
+		}
+	}
+}
+@media(min-width: 768px) {
+	.insert-prescription label {
+		padding: 0;
+	}
+}
+.navbar-default {
+	background-color: $background;
+	background: -webkit-linear-gradient(#3f4045, $background); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(#3f4045, $background); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(#3f4045, $background); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(#3f4045, $background); /* Standard syntax */
+	border-color: $background;
+	height: 50+$nav_border_bottom;
+	.navbar-brand {
+		color: $white;
+    	font-family: cursive;
+		&:hover {
+			color: $white;
+		}
+		&:focus {
+			color: $white;
+		}
+	}
+	.navbar-toggle {
+		border-color: $black;
+		&:hover {
+			background-color: #3f4045;
+		}
+		&:focus {
+			background-color: $background;
+		}
+		.icon-bar {
+			background-color: $white;
+		}
+	}
+	.navbar-nav > {
+		li > a {
+			color: $white;
+			&:hover {
+				color: $white;
+      			border-bottom: $nav_border_bottom solid $white;
+			}
+			&:focus {
+				color: $white;
+      			border-bottom: $nav_border_bottom solid $white;
+			}
+		}
+		.active > a {
+			color: $white;
+    		background-color: transparent;
+			&:hover {
+				color: $white;
+    			background-color: transparent;
+			}
+			&:focus {
+				color: $white;
+    			background-color: transparent;
+			}
+		}
+		.open > a {
+			color: $gray;
+			background-color: $color_quill_gray_approx;
+			&:hover {
+				color: $gray;
+				background-color: $color_quill_gray_approx;
+				.caret {
+					border-top-color: $gray;
+					border-bottom-color: $gray;
+				}
+			}
+			&:focus {
+				color: $gray;
+				background-color: $color_quill_gray_approx;
+				.caret {
+					border-top-color: $gray;
+					border-bottom-color: $gray;
+				}
+			}
+			.caret {
+				border-top-color: $gray;
+				border-bottom-color: $gray;
+			}
+		}
+		.dropdown > a {
+			.caret {
+				border-top-color: $dark_gray;
+				border-bottom-color: $dark_gray;
+			}
+			&:hover .caret {
+				border-top-color: $very_dark_gray;
+				border-bottom-color: $very_dark_gray;
+			}
+			&:focus .caret {
+				border-top-color: $very_dark_gray;
+				border-bottom-color: $very_dark_gray;
+			}
+		}
+	}
+}
+
+#prescriptions .btn {
+	font-family: $font_1;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #3f4045;
+}
+.table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #515159;
+}
+
+@media(max-width: 767px) {
+	#navbar {
+		background-color: $background;
+		background: -webkit-linear-gradient($background, #3f4045); /* For Safari 5.1 to 6.0 */
+		background: -o-linear-gradient($background, #3f4045); /* For Opera 11.1 to 12.0 */
+		background: -moz-linear-gradient($background, #3f4045); /* For Firefox 3.6 to 15 */
+		background: linear-gradient($background, #3f4045); /* Standard syntax */
+		border-color: $background;
+	}
+	.navbar-default .navbar-nav > li > a:hover {
+	border-bottom: none; }
+	.navbar-default .navbar-nav > li > a:focus {
+	border-bottom: none; }
+	.signin {
+		margin-top: 20px;
+		h1 {
+			margin-left: -35px;
+		}
+	}
+}
+@media(max-width: 991px) {
+	.pharmacy {
+		border-top: none;
+		border-bottom: none;
+		&.col-md-9 {
+			border-top: 1px solid rgba(0,0,0,0.5);
+			border-left: 1px solid rgba(0,0,0,0.5);
+			border-right: 1px solid rgba(255, 255, 255, 0.3);
+		}
+		&.col-md-3 {
+			border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+			border-left: 1px solid rgba(0,0,0,0.5);
+			border-right: 1px solid rgba(255, 255, 255, 0.3);
+			height: auto;
+		}
+	}
+}

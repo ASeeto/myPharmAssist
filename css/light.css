@@ -28,6 +28,9 @@ body {
   .signin .form-control:-ms-input-placeholder {
     color: #000; }
 
+#switchcss {
+  cursor: pointer; }
+
 .progress {
   height: 10px; }
 

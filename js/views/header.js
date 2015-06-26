@@ -16,7 +16,23 @@ window.HeaderView = Backbone.View.extend({
         return this;
     },
 
-    events: {},
+    events: {
+        "click #switchcss":"togglecss"
+    },
+
+    /** Toggle between stylesheets */
+    togglecss: function(){
+        event.preventDefault();
+        text = $('#switchcss').text();
+        if(text == 'Light Side'){
+            $('#current_style').attr('href','css/light.css');
+            $('#switchcss a').text('Dark Side');
+        }
+        else{
+            $('#current_style').attr('href','css/dark.css');
+            $('#switchcss a').text('Light Side');
+        }
+    },
 
     select: function(menuItem) {
         $('.nav li').removeClass('active');

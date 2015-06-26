@@ -31,7 +31,23 @@ window.Router = Backbone.Router.extend({
     header: function() {
         this.headerView = new HeaderView();
         $('.header').html(this.headerView.render().el);
+        this.switchcsstext();
+        if ($('body').hasClass('calendar') && 
+            !$('.calendar-menu').hasClass('active')){ 
+            $('body').removeClass('calendar');
+        }
         $('body').css({'background-image':'none'});
+    },
+
+    /** Correct #switchcss text based on current style sheet */
+    switchcsstext: function(){
+        style = $('#current_style').attr('href');
+        if(style == 'css/dark.css'){
+            $('#switchcss a').text('Light Side');
+        }
+        else{
+            $('#switchcss a').text('Dark Side');
+        }
     },
 
     login: function() {
@@ -158,6 +174,7 @@ window.Router = Backbone.Router.extend({
                 el.header();
                 if (!this.calendarView) {
                     el.headerView.select('calendar-menu');
+                    $('body').addClass('calendar');
                     this.calendarView = new CalendarView();
                     this.calendarView.render();
                 }
