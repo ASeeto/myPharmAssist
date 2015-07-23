@@ -323,6 +323,9 @@ body {
 	border-bottom: none; }
 	.navbar-default .navbar-nav > li > a:focus {
 	border-bottom: none; }
+	.navbar-default .navbar-nav > .active > a {
+	border-bottom: none; }
+
 	.signin {
 		margin-top: 20px;
 		h1 {

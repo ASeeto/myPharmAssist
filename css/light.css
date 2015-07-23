@@ -28,9 +28,6 @@ body {
   .signin .form-control:-ms-input-placeholder {
     color: #000; }
 
-#switchcss {
-  cursor: pointer; }
-
 .progress {
   height: 10px; }
 
@@ -201,6 +198,11 @@ body {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
       color: #333; }
     .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-      color: #333; } }
+      color: #333; }
 
-/*# sourceMappingURL=styles.css.map */
+  .signin {
+    margin-top: 20px; }
+    .signin h1 {
+      margin-left: -35px; } }
+
+/*# sourceMappingURL=light.css.map */
