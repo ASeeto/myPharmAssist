@@ -327,8 +327,10 @@ window.PrescriptionsView = Backbone.View.extend({
         /** Get the profile from the parent parent div of the button clicked */
         var profile = $(event.currentTarget).parent().parent();
         /** Default the update modal values as the profile's current settings */
-        label = profile.clone().children().remove().end().text();
+        label = profile.text();
+        label = label.substring(10, label.length);
         color = rgb2hex(profile.css('background-color'));
+        image = $('.pic', profile).children('img').attr('src');
         $('#updateProfileName').val(label);
         $('#updateProfileColor').val(color);
         /** Triggering events that occur when users type so colorpicker is accurate... */
@@ -338,6 +340,7 @@ window.PrescriptionsView = Backbone.View.extend({
         $('#updateProfileColor').blur();
         $('#updateProfileColor').focus();
         $('#updateProfileColor').change();
+        image == 'img/default-male.png' ? $('#updateProfileGender').val('m') : $('#updateProfileGender').val('f');
         /** Open the update modal */
         $('.update-profile').modal('show');
         /** Confirm update of clicked profile */
@@ -348,7 +351,8 @@ window.PrescriptionsView = Backbone.View.extend({
             var formValues = {
                 id: pid,
                 name: $('#updateProfileName').val(),
-                color: $('#updateProfileColor').val()
+                color: $('#updateProfileColor').val(),
+                gender: $('#updateProfileGender').val()
             };
             $.ajax({
                 url:url,

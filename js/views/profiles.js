@@ -159,7 +159,8 @@ window.ProfilesView = Backbone.View.extend({
             var formValues = {
                 id: pid,
                 name: $('#updateProfileName').val(),
-                color: $('#updateProfileColor').val()
+                color: $('#updateProfileColor').val(),
+                gender: $('#updateProfileGender').val()
             };
             $.ajax({
                 url:url,
